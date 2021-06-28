@@ -1,8 +1,9 @@
-import { Observable, Subscription, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import firebase from "firebase";
+import {FirebaseService} from "@src/services/firebase.service";
 
-export class AuthService {
+class AuthServiceClass {
 
   private authUser$ = new ReplaySubject<firebase.User>(1);
   private authUserSub = () => {};
@@ -13,7 +14,7 @@ export class AuthService {
   }
 
   private trackAuthUser() {
-    this.authUserSub = firebase.auth().onAuthStateChanged(authUser => {
+    this.authUserSub = FirebaseService.auth.onAuthStateChanged(authUser => {
       if (authUser != null) {
         this.authUser$.next(authUser);
       }
@@ -25,16 +26,16 @@ export class AuthService {
   }
 
   registerUser(email: string, password: string) {
-    return firebase.auth().createUserWithEmailAndPassword(email, password);
+    return FirebaseService.auth.createUserWithEmailAndPassword(email, password);
   }
 
   signIn(email: string, password: string) {
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+    return FirebaseService.auth.signInWithEmailAndPassword(email, password);
   }
 
   signInWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    return firebase.auth().signInWithPopup(provider);
+    return FirebaseService.auth.signInWithPopup(provider);
   }
 
   async getCurrentProviderId() {
@@ -45,7 +46,7 @@ export class AuthService {
   }
 
   signOut() {
-    return firebase.auth().signOut();
+    return FirebaseService.auth.signOut();
   }
 
   async isSignedIn(): Promise<boolean> {
@@ -64,7 +65,7 @@ export class AuthService {
   }
 
   sendEmailToResetPassword(email: string) {
-    return firebase.auth().sendPasswordResetEmail(email);
+    return FirebaseService.auth.sendPasswordResetEmail(email);
   }
 
   ngOnDestroy() {
@@ -72,3 +73,5 @@ export class AuthService {
   }
 
 }
+
+export const AuthService = new AuthServiceClass();

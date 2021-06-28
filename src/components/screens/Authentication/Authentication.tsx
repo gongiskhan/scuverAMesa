@@ -5,6 +5,7 @@ import AuthContext from '@src/context/auth-context';
 import useThemeColors from '@src/custom-hooks/useThemeColors';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
+import {AuthService} from "@src/services/auth.service";
 
 type AuthenticationProps = {};
 
@@ -16,8 +17,16 @@ const Authentication: React.FC<AuthenticationProps> = () => {
   const _onConnectWithPhoneNumberButtonPressed = () => {
     navigation.navigate('AuthWithPhoneNumberScreen');
   };
-  const _onSocialNetworkConnectButtonPressed = () => {
-    signIn();
+  const _onFacebookConnectButtonPressed = () => {
+    AuthService.signInWithGoogle().then(u => {
+
+    });
+  };
+  const _onGoogleConnectButtonPressed = () => {
+    AuthService.signInWithGoogle().then(u => {
+      console.log('_onGoogleConnectButtonPressed', u);
+      navigation.navigate('Home');
+    });
   };
 
   return (
@@ -55,7 +64,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
             style={styles.button}
             backgroundColor="#4267b2"
             isFullWidth
-            onPress={_onSocialNetworkConnectButtonPressed}>
+            onPress={_onFacebookConnectButtonPressed}>
             <Text isBold isWhite>
               Utilize a sua conta Facebook
             </Text>
@@ -64,7 +73,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
             style={styles.button}
             backgroundColor="#4285F3"
             isFullWidth
-            onPress={_onSocialNetworkConnectButtonPressed}>
+            onPress={_onGoogleConnectButtonPressed}>
             <Text isBold isWhite>
               Utilize a sua conta Google
             </Text>
