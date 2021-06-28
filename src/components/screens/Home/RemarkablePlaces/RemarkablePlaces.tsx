@@ -4,6 +4,8 @@ import {FeaturedTab, NewestTab, TrendingTab} from './Tabs';
 import {TabView} from '@src/components/elements';
 import styles from './styles';
 import {TabViewData} from '@src/components/elements/TabView/TabView';
+import {mockRemarkablePlace, Place} from "@src/data/mock-places";
+import PlaceListItem from "@src/components/common/PlaceListItem";
 
 type RemarkablePlacesProps = {};
 
@@ -24,11 +26,9 @@ const tabData: TabViewData = [
 const RemarkablePlaces: React.FC<RemarkablePlacesProps> = () => {
   return (
     <Container style={styles.container}>
-      <TabView
-        tabData={tabData}
-        tabBarStyle={styles.tabBarStyle}
-        isTabBarFullWidth
-      />
+      {mockRemarkablePlace.featured.map((item: Place) => {
+        return <PlaceListItem key={item.id} data={item} />;
+      })}
     </Container>
   );
 };

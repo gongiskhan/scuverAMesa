@@ -9,7 +9,7 @@
  */
 
 import 'react-native-gesture-handler';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StatusBar, View, Platform} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
@@ -19,13 +19,23 @@ import DishDetails from '@src/components/screens/DishDetails';
 import SearchDishes from '@src/components/screens/SearchDishes';
 import AuthenticationStack from '@src/components/routes/Stacks/AuthenticationStack';
 import {lightTheme, darkTheme} from '@src/styles/theme';
-import AuthContext from '@src/context/auth-context';
+import {AuthService} from "@src/services/auth.service";
+import {useTimeout} from "react-native-confirmation-code-field/esm/useTimer";
 
 const RootStack = createStackNavigator();
 
 const RootNavigation = () => {
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    AuthService.getCurrentAuthUser().subscribe(u => {
+      // console.log('current auth user', !!u);
+      setUser(u as any);
+    });
+  });
+
   const {theme} = useContext(ThemeContext);
-  const {userToken} = useContext(AuthContext);
   const flex = 1;
   const rootContainerBackgroundColor =
     theme === 'light'
@@ -52,7 +62,7 @@ const RootNavigation = () => {
           barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
         />
         <RootStack.Navigator mode="modal" screenOptions={screenOptions}>
-          {userToken ? (
+          {user ? (
             <RootStack.Screen
               name="Main"
               options={{headerShown: false}}

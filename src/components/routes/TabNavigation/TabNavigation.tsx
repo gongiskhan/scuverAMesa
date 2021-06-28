@@ -48,7 +48,7 @@ const renderTabBarIcon = (routeName: string) => {
 const TabNavigation: React.FC<TabNavigationProps> = () => {
   return (
     <Navigator
-      initialRouteName="Explore"
+      initialRouteName="Restaurantes"
       screenOptions={(props) => {
         const {
           route: {name: routeName},

@@ -3,6 +3,7 @@ import firebase from "firebase";
 class FirebaseServiceClass {
 
   public auth;
+  public firestore;
 
   constructor(
   ) {
@@ -18,6 +19,7 @@ class FirebaseServiceClass {
     });
 
     this.auth = firebase.auth();
+    this.firestore = firebase.firestore();
   }
 
 }

@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "food-star-expo-app-template",
-    "slug": "food-star-expo-app-template",
+    "sdkVersion": "41.0.0",
+    "name": "Scuver à Mesa",
+    "slug": "scuver-a-mesa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,12 +18,21 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.appmob.scuveramesa",
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationAlwaysAndWhenInUseUsageDescription": "This app use location service to show user's position on map"
-      }
+      },
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.326732084118-0h22shlmei0g3ccikpkdpbojoskv2gsr"
+        }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "package": "com.appmob.scuveramesa",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

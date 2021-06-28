@@ -4,7 +4,7 @@ import {Container, Text, Button} from '@src/components/elements';
 import AuthContext from '@src/context/auth-context';
 import useThemeColors from '@src/custom-hooks/useThemeColors';
 import styles from './styles';
-import {useNavigation} from '@react-navigation/native';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import {AuthService} from "@src/services/auth.service";
 
 type AuthenticationProps = {};
@@ -12,20 +12,16 @@ type AuthenticationProps = {};
 const Authentication: React.FC<AuthenticationProps> = () => {
   const navigation = useNavigation();
   const {primary} = useThemeColors();
-  const {signIn} = React.useContext(AuthContext);
 
   const _onConnectWithPhoneNumberButtonPressed = () => {
     navigation.navigate('AuthWithPhoneNumberScreen');
   };
   const _onFacebookConnectButtonPressed = () => {
-    AuthService.signInWithGoogle().then(u => {
-
-    });
+    AuthService.signInWithGoogle();
   };
   const _onGoogleConnectButtonPressed = () => {
     AuthService.signInWithGoogle().then(u => {
-      console.log('_onGoogleConnectButtonPressed', u);
-      navigation.navigate('Home');
+      navigation.dispatch(StackActions.replace('AuthenticationScreen'));
     });
   };
 
@@ -54,28 +50,19 @@ const Authentication: React.FC<AuthenticationProps> = () => {
         <View style={styles.loginMethod}>
           <Button
             style={styles.button}
-            isFullWidth
-            onPress={_onConnectWithPhoneNumberButtonPressed}>
-            <Text isBold isWhite>
-              Utilize o seu Número de Telefone
-            </Text>
-          </Button>
-          <Button
-            style={styles.button}
-            backgroundColor="#4267b2"
-            isFullWidth
-            onPress={_onFacebookConnectButtonPressed}>
-            <Text isBold isWhite>
-              Utilize a sua conta Facebook
-            </Text>
-          </Button>
-          <Button
-            style={styles.button}
             backgroundColor="#4285F3"
             isFullWidth
             onPress={_onGoogleConnectButtonPressed}>
             <Text isBold isWhite>
               Utilize a sua conta Google
+            </Text>
+          </Button>
+          <Button
+            style={styles.button}
+            isFullWidth
+            onPress={_onConnectWithPhoneNumberButtonPressed}>
+            <Text isBold isWhite>
+              Utilize o seu Número de Telefone
             </Text>
           </Button>
         </View>

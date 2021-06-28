@@ -32,14 +32,14 @@ const Home: React.FC<HomeProps> = () => {
   return (
     <SafeAreaView style={styles.root}>
       <ScrollView style={styles.scrollView} ref={scrollViewRef} stickyHeaderIndices={[0]}>
-        <SearchBar placeholder="Pesquise restaurantes ou pratos" />
-        <PopularCategories />
+        {/*<SearchBar placeholder="Pesquise restaurantes ou pratos" />*/}
+        {/*<PopularCategories />*/}
         {isNavigationTransitionFinished ? (
           <>
-            <PopularPlaces />
-            <MerchantCampaigns />
-            <RecommendedPlaces />
-            <HotDeals />
+            {/*<PopularPlaces />*/}
+            {/*<MerchantCampaigns />*/}
+            {/*<RecommendedPlaces />*/}
+            {/*<HotDeals />*/}
             <RemarkablePlaces />
           </>
         ) : (

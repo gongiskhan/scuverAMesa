@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "326732084118",
+    "firebase_url": "https://scuver-data-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "scuver-data",
+    "storage_bucket": "scuver-data.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326732084118:android:0fc825b67aa4669630e3b7",
+        "android_client_info": {
+          "package_name": "com.appmob.scuveramesa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "326732084118-kkns14e12mqlic98lcsa0rmgb96a2b74.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOgo1EeNJXqSP6DePJK_hnx9aCKuA5--Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "326732084118-kkns14e12mqlic98lcsa0rmgb96a2b74.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "326732084118-u1afnf1b337jmc2a15l59eiost6e1vog.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.appmob.scuver"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

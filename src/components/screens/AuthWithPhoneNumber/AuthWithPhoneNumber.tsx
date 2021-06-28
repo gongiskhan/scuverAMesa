@@ -4,6 +4,7 @@ import {Text, TextField, Button, Dialog} from '@src/components/elements';
 import useThemeColors from '@src/custom-hooks/useThemeColors';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
+import {AuthService} from "@src/services/auth.service";
 
 type AuthWithPhoneNumberProps = {};
 
@@ -29,8 +30,10 @@ const AuthWithPhoneNumber: React.FC<AuthWithPhoneNumberProps> = () => {
     setIsModalVisible(true);
   };
   const _onConfirmButtonPressed = () => {
-    navigation.navigate('AuthVerificationCodeScreen');
-    _hideModal();
+    AuthService.askPhoneCode(phoneNumber).then(() => {
+      navigation.navigate('AuthVerificationCodeScreen');
+      _hideModal();
+    });
   };
 
   return (

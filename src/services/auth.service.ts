@@ -1,7 +1,8 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import firebase from "firebase";
-import {FirebaseService} from "@src/services/firebase.service";
+import firebase from 'firebase';
+import * as GoogleSignIn from 'expo-google-sign-in';
+import {FirebaseService} from '@src/services/firebase.service';
 
 class AuthServiceClass {
 
@@ -15,6 +16,7 @@ class AuthServiceClass {
 
   private trackAuthUser() {
     this.authUserSub = FirebaseService.auth.onAuthStateChanged(authUser => {
+      // console.log('authUser', !!authUser);
       if (authUser != null) {
         this.authUser$.next(authUser);
       }
@@ -33,9 +35,21 @@ class AuthServiceClass {
     return FirebaseService.auth.signInWithEmailAndPassword(email, password);
   }
 
-  signInWithGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    return FirebaseService.auth.signInWithPopup(provider);
+  async signInWithGoogle() {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type, user } = await GoogleSignIn.signInAsync();
+      if (type === 'success') {
+        const credential = firebase.auth.GoogleAuthProvider.credential(user?.auth?.idToken);
+        firebase.auth().signInWithCredential(credential).catch((error) => console.error(error));
+      }
+    } catch ({ message }) {
+      console.error('login: Error:' + message);
+    }
+  }
+
+  async askPhoneCode(phoneNumber: any) {
+    console.log('phoneNumber', phoneNumber);
   }
 
   async getCurrentProviderId() {
