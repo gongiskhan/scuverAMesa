@@ -22,10 +22,25 @@ import ThemeContext from '@src/context/theme-context';
 import AuthProvider from '@src/components/common/AuthProvider/AuthProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppReviewConfig} from '@src/constants';
+import firebase from "firebase";
 
 const {USES_UNTIL_SHOW} = AppReviewConfig;
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDxiMAmLUqiYpWyDipDljWYRsYvKCho7Y0",
+  authDomain: "scuver-data.firebaseapp.com",
+  databaseURL: "https://scuver-data-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "scuver-data",
+  storageBucket: "scuver-data.appspot.com",
+  messagingSenderId: "326732084118",
+  appId: "1:326732084118:web:2ad29e73e90879d830e3b7",
+  measurementId: "G-HRSGS1DXSB"
+};
+
+firebase.initializeApp(firebaseConfig);
+
 const App = () => {
+
   const appState = React.useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = React.useState(
     appState.current,

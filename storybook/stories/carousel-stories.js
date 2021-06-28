@@ -10,7 +10,7 @@ storiesOf('Carousel', module)
       <Carousel
         data={mockPlaces}
         itemWidth={Dimensions.get('window').width / 2}
-        renderContent={(item: Place, index, parallaxProps) => {
+        renderContent={(item, index, parallaxProps) => {
           const {image, title, subTitle} = item;
           return (
             <Card
@@ -30,7 +30,7 @@ storiesOf('Carousel', module)
         data={mockPlaces}
         enableSnap
         itemWidth={Dimensions.get('window').width}
-        renderContent={(item: Place, index, parallaxProps) => {
+        renderContent={(item, index, parallaxProps) => {
           const {image, title, subTitle} = item;
           return (
             <Card

@@ -9,6 +9,7 @@ import PopularCategories from './PopularCategories';
 import HotDeals from './HotDeals';
 import RemarkablePlaces from './RemarkablePlaces';
 import AppReviewModal from '@src/components/common/AppReviewModal';
+import styles from "./styles";
 
 type HomeProps = {};
 
@@ -29,9 +30,9 @@ const Home: React.FC<HomeProps> = () => {
   );
 
   return (
-    <SafeAreaView>
-      <ScrollView ref={scrollViewRef} stickyHeaderIndices={[0]}>
-        <SearchBar placeholder="Find places, dishes, restaurants..." />
+    <SafeAreaView style={styles.root}>
+      <ScrollView style={styles.scrollView} ref={scrollViewRef} stickyHeaderIndices={[0]}>
+        <SearchBar placeholder="Pesquise restaurantes ou pratos" />
         <PopularCategories />
         {isNavigationTransitionFinished ? (
           <>

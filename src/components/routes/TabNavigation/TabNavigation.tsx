@@ -6,6 +6,8 @@ import AccountStack from '../Stacks/AccountStack';
 import NotificationStack from '../Stacks/NotificationStack';
 import ActivityHistoryStack from '../Stacks/ActivityHistoryStack';
 import Documentation from '@src/components/screens/Documentation';
+import Wallet from "@src/components/screens/Wallet/Wallet";
+import Entrega from "@src/components/screens/Entrega";
 
 type TabNavigationProps = {};
 type TabBarIconProps = {
@@ -21,20 +23,20 @@ const renderTabBarIcon = (routeName: string) => {
     const {color} = props;
     let iconName = 'home';
     switch (routeName) {
-      case 'Explore':
-        iconName = 'compass';
+      case 'Restaurantes':
+        iconName = 'utensils';
         break;
-      case 'Activity':
+      case 'Histórico':
         iconName = 'history';
         break;
-      case 'Notifications':
-        iconName = 'bell';
+      case 'Entrega':
+        iconName = 'motorcycle';
         break;
-      case 'Account':
+      case 'Conta':
         iconName = 'user';
         break;
-      case 'Documentation':
-        iconName = 'book';
+      case 'Carteira':
+        iconName = 'wallet';
         break;
       default:
         break;
@@ -46,7 +48,7 @@ const renderTabBarIcon = (routeName: string) => {
 const TabNavigation: React.FC<TabNavigationProps> = () => {
   return (
     <Navigator
-      initialRouteName="Home"
+      initialRouteName="Explore"
       screenOptions={(props) => {
         const {
           route: {name: routeName},
@@ -55,11 +57,11 @@ const TabNavigation: React.FC<TabNavigationProps> = () => {
           tabBarIcon: renderTabBarIcon(routeName),
         };
       }}>
-      <Tab.Screen name="Explore" component={HomeStack} />
-      <Tab.Screen name="Activity" component={ActivityHistoryStack} />
-      <Tab.Screen name="Notifications" component={NotificationStack} />
-      <Tab.Screen name="Account" component={AccountStack} />
-      <Tab.Screen name="Documentation" component={Documentation} />
+      <Tab.Screen name="Restaurantes" component={HomeStack} />
+      <Tab.Screen name="Histórico" component={ActivityHistoryStack} />
+      <Tab.Screen name="Carteira" component={Wallet} />
+      <Tab.Screen name="Conta" component={AccountStack} />
+      <Tab.Screen name="Entrega" component={Entrega} />
     </Navigator>
   );
 };

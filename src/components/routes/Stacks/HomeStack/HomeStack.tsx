@@ -30,7 +30,7 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
           style={styles.locationIcon}
           isPrimary
         />
-        <Text style={styles.headerTitle}>588 Blanda Square - Virginia</Text>
+        <Text style={styles.headerTitle}>Não se encontra num restaurante Scuver</Text>
       </View>
     );
   };
@@ -38,10 +38,9 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
   const _renderExploreHeaderRight = () => {
     return (
       <Icon
-        name="notifications"
+        name="chevron-right"
         size={22}
         isPrimary
-        useIonicons
         onPress={() => navigation.navigate('Notifications')}
       />
     );
@@ -63,7 +62,7 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
         options={() => {
           return {
             headerTitle: _renderExploreHeaderTitle,
-            title: 'Explore',
+            title: 'Restaurantes',
             headerTitleAlign: 'left',
             headerRight: _renderExploreHeaderRight,
             headerRightContainerStyle: styles.headerRightContainer,

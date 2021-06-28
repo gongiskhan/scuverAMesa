@@ -36,12 +36,11 @@ const Authentication: React.FC<AuthenticationProps> = () => {
       </View>
       <Container style={styles.loginMethodContainer}>
         <Text isBold isHeadingTitle>
-          Get food you want.
+          As suas refeições evoluiram
         </Text>
         <Text isSecondary style={styles.introductionText}>
-          Satisfy your cravings by getting the food you love from your favourite
-          restaurants delivered to you fast. Delivery & takeout from the best
-          local restaurants.
+          Com o Scuver à Mesa vai poder usufrir das suas refeições
+          mais comodamente. Experimente!
         </Text>
         <View style={styles.loginMethod}>
           <Button
@@ -49,7 +48,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
             isFullWidth
             onPress={_onConnectWithPhoneNumberButtonPressed}>
             <Text isBold isWhite>
-              Connect with Phone Number
+              Utilize o seu Número de Telefone
             </Text>
           </Button>
           <Button
@@ -58,7 +57,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
             isFullWidth
             onPress={_onSocialNetworkConnectButtonPressed}>
             <Text isBold isWhite>
-              Connect with Facebook
+              Utilize a sua conta Facebook
             </Text>
           </Button>
           <Button
@@ -67,7 +66,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
             isFullWidth
             onPress={_onSocialNetworkConnectButtonPressed}>
             <Text isBold isWhite>
-              Connect with Google
+              Utilize a sua conta Google
             </Text>
           </Button>
         </View>
