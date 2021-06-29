@@ -44,7 +44,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
           As suas refeições evoluiram
         </Text>
         <Text isSecondary style={styles.introductionText}>
-          Com o Scuver à Mesa vai poder usufrir das suas refeições
+          Com o Scuver à Mesa vai poder usufruir das suas refeições
           mais comodamente. Experimente!
         </Text>
         <View style={styles.loginMethod}>
