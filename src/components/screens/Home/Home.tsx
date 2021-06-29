@@ -7,7 +7,7 @@ import RecommendedPlaces from './RecommendedPlaces';
 import MerchantCampaigns from './MerchantCampaigns';
 import PopularCategories from './PopularCategories';
 import HotDeals from './HotDeals';
-import RemarkablePlaces from './RemarkablePlaces';
+import Shops from './Shops';
 import AppReviewModal from '@src/components/common/AppReviewModal';
 import styles from "./styles";
 
@@ -40,7 +40,7 @@ const Home: React.FC<HomeProps> = () => {
             {/*<MerchantCampaigns />*/}
             {/*<RecommendedPlaces />*/}
             {/*<HotDeals />*/}
-            <RemarkablePlaces />
+            <Shops />
           </>
         ) : (
           <LoadingIndicator size="large" hasMargin />

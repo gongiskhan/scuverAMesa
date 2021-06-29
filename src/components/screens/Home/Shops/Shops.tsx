@@ -7,7 +7,7 @@ import {TabViewData} from '@src/components/elements/TabView/TabView';
 import {mockRemarkablePlace, Place} from "@src/data/mock-places";
 import PlaceListItem from "@src/components/common/PlaceListItem";
 
-type RemarkablePlacesProps = {};
+type ShopsProps = {};
 
 const tabData: TabViewData = [
   {key: '0', title: 'Featured', content: FeaturedTab},
@@ -23,7 +23,7 @@ const tabData: TabViewData = [
   },
 ];
 
-const RemarkablePlaces: React.FC<RemarkablePlacesProps> = () => {
+const Shops: React.FC<ShopsProps> = () => {
   return (
     <Container style={styles.container}>
       {mockRemarkablePlace.featured.map((item: Place) => {
@@ -33,4 +33,4 @@ const RemarkablePlaces: React.FC<RemarkablePlacesProps> = () => {
   );
 };
 
-export default RemarkablePlaces;
+export default Shops;
