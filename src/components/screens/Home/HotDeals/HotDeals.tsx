@@ -3,7 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Carousel, Section, Card} from '@src/components/elements';
 import {Dimensions} from 'react-native';
 import {mockPlaces, Place} from '@src/data/mock-places';
-import PlaceCardInfo from '@src/components/common/PlaceCardInfo';
+import ShopCardInfo from '@src/components/common/ShopCardInfo';
 
 type HotDealsProps = {};
 
@@ -36,7 +36,7 @@ const HotDeals: React.FC<HotDealsProps> = () => {
               subTitle={subTitle}
               parallaxProps={parallaxProps}
               onPress={_onPlaceItemPressed}>
-              <PlaceCardInfo data={item} />
+              <ShopCardInfo data={item} />
             </Card>
           );
         }}

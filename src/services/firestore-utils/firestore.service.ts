@@ -88,11 +88,19 @@ class FirestoreServiceClass {
   //   }).valueChanges().pipe(map(value => value[0]));
   // }
   //
-  // observeRecordsByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any): Observable<any> {
-  //   return FirebaseService.firestore.collection(collection, (collectionRef) => {
-  //     return collectionRef.where(property, filterOp, value);
-  //   }).valueChanges();
-  // }
+
+  observeRecordsByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any): Observable<any> {
+    return new Observable(observer => {
+      FirebaseService.firestore.collection(collection).where(property, filterOp, value).onSnapshot(querySnapshot => {
+        const records: any = [];
+        querySnapshot.forEach(q => {
+          records.push(q.data());
+        });
+        observer.next(records);
+      });
+    });
+  }
+
   //
   // observeRecordsByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
   //   return FirebaseService.firestore.collection(collection, (collectionRef) => {

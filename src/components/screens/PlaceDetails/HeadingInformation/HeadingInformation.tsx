@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Card, Container, Icon, Text} from '@src/components/elements';
-import PlaceCardInfo from '@src/components/common/PlaceCardInfo';
+import ShopCardInfo from '@src/components/common/ShopCardInfo';
 import styles from './styles';
 import {Place} from '@src/data/mock-places';
 
@@ -17,7 +17,7 @@ const HeadingInformation: React.FC<HeadingInformationProps> = ({data}) => {
       subTitle={subTitle}
       titleStyle={styles.title}
       style={styles.headingContainer}>
-      <PlaceCardInfo data={data} />
+      <ShopCardInfo data={data} />
       <Container style={styles.infoSection}>
         <Text style={styles.label}>Opening Hours</Text>
         <Text>09:30 AM - 10:00PM</Text>

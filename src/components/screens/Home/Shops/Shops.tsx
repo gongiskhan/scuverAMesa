@@ -5,7 +5,10 @@ import {TabView} from '@src/components/elements';
 import styles from './styles';
 import {TabViewData} from '@src/components/elements/TabView/TabView';
 import {mockRemarkablePlace, Place} from "@src/data/mock-places";
-import PlaceListItem from "@src/components/common/PlaceListItem";
+import ShopListItem from "@src/components/common/ShopListItem";
+import {useEffect, useState} from "react";
+import {ShopService} from "@src/services/shop.service";
+import {Shop} from "@src/models/shop";
 
 type ShopsProps = {};
 
@@ -24,10 +27,30 @@ const tabData: TabViewData = [
 ];
 
 const Shops: React.FC<ShopsProps> = () => {
+
+  const [shops, setShops] = useState([]);
+
+  useEffect(() => {
+    console.log('AQUI');
+    ShopService.observeShops().subscribe(shopz => {
+      console.log('shopz.length', shopz.length);
+      setShops(shopz as any);
+    });
+  });
+
   return (
     <Container style={styles.container}>
-      {mockRemarkablePlace.featured.map((item: Place) => {
-        return <PlaceListItem key={item.id} data={item} />;
+      {shops.map((item: Shop) => {
+        return <ShopListItem
+            key={item.uid}
+            data={item}
+            distance={ShopService.shopDistances.get(item.uid) || 0}
+            rating={ShopService.shopRatings.get(item.uid) || 0}
+            reviewsLength={ShopService.shopReviewsLength.get(item.uid) || 0}
+            foodType={ShopService.shopFoodTypes.get(item.uid) || ''}
+            fee={ShopService.shopDeliveryFees.get(item.uid) || 0}
+            schedule={ShopService.shopTodaySchedules.get(item.uid)}
+        />;
       })}
     </Container>
   );

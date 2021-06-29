@@ -11,7 +11,7 @@ import {I18nManager} from 'react-native';
 type ChangeAddressProps = {};
 const chevronIconName = I18nManager.isRTL ? 'chevron-left' : 'chevron-right';
 
-const savedPlaceListItem: ListRowItemProps = {
+const savedShopListItem: ListRowItemProps = {
   id: '1',
   title: 'Saved Places',
   subTitle: 'Select a delivery address easily',
@@ -41,7 +41,7 @@ const ChangeAddress: React.FC<ChangeAddressProps> = () => {
     });
   };
 
-  const _savedPlaceListItemPressed = () => {
+  const _savedShopListItemPressed = () => {
     navigation.navigate('SavedAddressesScreen');
   };
 
@@ -49,8 +49,8 @@ const ChangeAddress: React.FC<ChangeAddressProps> = () => {
     return (
       <>
         <ListRowItem
-          {...savedPlaceListItem}
-          onPress={_savedPlaceListItemPressed}
+          {...savedShopListItem}
+          onPress={_savedShopListItemPressed}
         />
         <Divider />
         <ListRowItem {...useCurrentLocationListItem} />
