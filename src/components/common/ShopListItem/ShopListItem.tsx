@@ -9,22 +9,10 @@ import {DaySchedule} from "@src/models/submodels/timetable";
 
 type ShopListItemProps = {
   data: Shop;
-  foodType: string;
-  rating: number;
-  reviewsLength: number;
-  distance: number;
-  fee: number;
-  schedule?: DaySchedule;
 };
 
 const ShopListItem: React.FC<ShopListItemProps> = ({
   data,
-  foodType,
-  rating,
-  reviewsLength,
-  distance,
-  fee,
-  schedule
 }) => {
   const {photoUrl, name} = data;
   const navigation = useNavigation();
@@ -36,13 +24,17 @@ const ShopListItem: React.FC<ShopListItemProps> = ({
   return (
     <Touchable onPress={_onShopItemPressed}>
       <Container style={styles.container}>
-        {photoUrl ? <Image style={styles.image} source={{uri: photoUrl}} /> : ''}
+        {
+          photoUrl ?
+          <Image style={styles.image} source={{uri: photoUrl}} /> :
+          <Image style={styles.image} source={require('../../../assets/app/store_3.png')} />
+        }
         <View style={styles.placeInfoContainer}>
           <View style={styles.placeInfo}>
             <Text style={styles.placeTitle}>{name}</Text>
-            <Text style={styles.placeSubTitle}>{foodType}</Text>
+            <Text style={styles.placeSubTitle}>{data.foodType}</Text>
           </View>
-          <ShopCardInfo data={data} rating={rating} distance={distance} reviewsLength={reviewsLength} fee={fee} schedule={schedule}/>
+          <ShopCardInfo data={data}/>
         </View>
       </Container>
     </Touchable>

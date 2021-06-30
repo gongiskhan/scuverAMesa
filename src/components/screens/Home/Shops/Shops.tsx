@@ -12,20 +12,6 @@ import {Shop} from "@src/models/shop";
 
 type ShopsProps = {};
 
-const tabData: TabViewData = [
-  {key: '0', title: 'Featured', content: FeaturedTab},
-  {
-    key: '1',
-    title: 'Newest',
-    content: NewestTab,
-  },
-  {
-    key: '3',
-    title: 'Trending',
-    content: TrendingTab,
-  },
-];
-
 const Shops: React.FC<ShopsProps> = () => {
 
   const [shops, setShops] = useState([]);
@@ -36,7 +22,7 @@ const Shops: React.FC<ShopsProps> = () => {
       console.log('shopz.length', shopz.length);
       setShops(shopz as any);
     });
-  });
+  }, []);
 
   return (
     <Container style={styles.container}>
@@ -44,12 +30,6 @@ const Shops: React.FC<ShopsProps> = () => {
         return <ShopListItem
             key={item.uid}
             data={item}
-            distance={ShopService.shopDistances.get(item.uid) || 0}
-            rating={ShopService.shopRatings.get(item.uid) || 0}
-            reviewsLength={ShopService.shopReviewsLength.get(item.uid) || 0}
-            foodType={ShopService.shopFoodTypes.get(item.uid) || ''}
-            fee={ShopService.shopDeliveryFees.get(item.uid) || 0}
-            schedule={ShopService.shopTodaySchedules.get(item.uid)}
         />;
       })}
     </Container>

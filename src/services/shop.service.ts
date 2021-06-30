@@ -16,16 +16,8 @@ class ShopServiceClass {
   private currentShop$ = new BehaviorSubject<Shop>(null);
   private currentShopSub = new Subscription();
   firestoreService = FirestoreService;
-  // shops: Array<Shop> = [];
+  shops: Array<Shop> = [];
   foodTypes: Array<FoodType> = [];
-
-  shopDistances      = new Map<string, number>(); // <- (shopId, distance)
-  shopDeliveryFees   = new Map<string, number>(); // <- (shopId, deliveryFee)
-  shopTodaySchedules = new Map<string, DaySchedule>(); // <- (shopId, daySchedule)
-  shopRatings        = new Map<string, number>(); // <- (shopId, ratingText)
-  shopReviewsLength  = new Map<string, number>(); // <- (shopId, ratingText)
-  shopFoodTypes      = new Map<string, string>(); // <- (shopId, ratingText)
-
   locationHelper = LocationHelper;
   location: any = null;
   shopHelper = ShopHelper;
@@ -46,45 +38,37 @@ class ShopServiceClass {
     //   const { code, message } = error;
     //   console.warn(code, message);
     //   this.location = null;
-    //   this.startObservingShops();
+      this.startObservingShops();
     // });
   }
 
-  // startObservingShops() {
-  //   this.observeShops().subscribe(shops => {
-  //     this.shops = shops;
-  //     if (this.location) {
-  //       this.calculateShopDistances();
-  //       this.calculateShopDeliveryFees();
-  //     }
-  //     this.setShopTodaySchedules();
-  //     this.setRatings();
-  //   });
-  // }
+  startObservingShops() {
+    this.observeShops().subscribe(shops => {
+      this.shops = shops;
+      if (this.location) {
+        this.calculateShopDistances();
+        this.calculateShopDeliveryFees();
+      }
+      this.setShopTodaySchedules();
+      this.setRatings();
+    });
+  }
 
   calculateShopDistances() {
-    this.shopDistances.clear();
-
     this.shops.forEach(shop => {
-      const shopId = shop.uid;
       const distanceInKm = this.locationHelper.getRadiusDistanceInKm(shop.address.coordinates, this.location);
-      this.shopDistances.set(shopId, Math.round(distanceInKm) + 1);
+      shop.distance = Math.round(distanceInKm) + 1;
     });
   }
 
   calculateShopDeliveryFees() {
-    this.shopDeliveryFees.clear();
-
     this.shops.forEach(shop => {
-      const shopId = shop.uid;
-      const deliveryFee = this.shopHelper.getDeliveryFee(shop, this.shopDistances.get(shopId) as number);
-      this.shopDeliveryFees.set(shopId, deliveryFee);
+      const deliveryFee = this.shopHelper.getDeliveryFee(shop, shop.distance as number);
+      shop.deliveryFee = deliveryFee;
     });
   }
 
   setShopTodaySchedules() {
-    this.shopTodaySchedules.clear();
-
     this.shops.forEach(shop => {
       const shopId = shop.uid;
       const todaySchedule = JSON.parse(JSON.stringify(this.shopHelper.getTodaySchedule(shop)));
@@ -97,16 +81,19 @@ class ShopServiceClass {
           wp.endTime = end.toString();
         }
       });
-      this.shopTodaySchedules.set(shopId, todaySchedule);
+      shop.todaySchedule = todaySchedule;
     });
   }
 
   setRatings() {
     this.reviewService.observeShopRatings().subscribe(l =>  {
-      l.forEach((k, v) => {
-        const spl = v.split(':');
-        this.shopRatings.set(k, spl[0] as any as number);
-        this.shopReviewsLength.set(k, spl[1] as any as number);
+      l.forEach((v, k) => {
+        const shop = this.shops.find(s => s.uid === k);
+        if (shop) {
+          const spl = v.split(':');
+          shop.rating = spl[0] as any as number;
+          shop.reviewsLength = spl[1] as any as number;
+        }
       });
     });
   }

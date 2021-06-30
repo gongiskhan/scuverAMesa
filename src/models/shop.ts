@@ -1,7 +1,7 @@
 import { Address } from './submodels/address';
 import { BookingSettings } from './submodels/booking-settings';
 import { ClosingDays } from './submodels/closing-days';
-import { Timetable } from './submodels/timetable';
+import {DaySchedule, Timetable} from './submodels/timetable';
 
 export class Shop {
 
@@ -28,7 +28,13 @@ export class Shop {
     public bookingSettings: BookingSettings = new BookingSettings(),
     public iban: string = '',
     public promo: number = 0,
-    public inShopEnabled = false
+    public inShopEnabled = false,
+    public distance = 0,
+    public deliveryFee = 0,
+    public todaySchedule: DaySchedule = new DaySchedule(),
+    public rating = 0,
+    public reviewsLength = 0,
+    public foodType = ''
   ) {}
 
 }
