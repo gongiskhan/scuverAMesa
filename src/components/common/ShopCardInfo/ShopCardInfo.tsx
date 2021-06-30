@@ -5,6 +5,7 @@ import {Rating, Button, Icon, Text} from '@src/components/elements';
 import styles from './styles';
 import {Shop} from "@src/models/shop";
 import {DaySchedule} from "@src/models/submodels/timetable";
+import {lightTheme} from "@src/styles/theme";
 
 type ShopCardInfoProps = {
   data: Shop;
@@ -21,14 +22,10 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
   } = useTheme();
   return (
     <View style={styles.container}>
-      <View style={{...styles.ratingContainer, position: 'absolute', top: -40, right: 10}}>
-        <Rating
-            value={data.rating || 0}
-            itemSize={16}
-            readonly
-            ratingStarBackgroundColor={ratingStarBackgroundColor}
-            numberOfRatings={0}
-        />
+      <View style={{...styles.ratingContainer, position: 'absolute', top: -40, right: 10, flex: 0, flexDirection: 'row'}}>
+        <Icon name="star" size={12} solid={true} style={{color: lightTheme.colors.tertiary}}/>
+        <Text isPrimary style={{position: 'relative', bottom: 2, color: lightTheme.colors.tertiary}}>{data.rating}</Text>
+        <Text isPrimary style={{position: 'relative', bottom: 3, fontSize: 12, color: lightTheme.colors.tertiary}}>({data.reviewsLength})</Text>
       </View>
       <View style={styles.buttonContainer}>
         <Button

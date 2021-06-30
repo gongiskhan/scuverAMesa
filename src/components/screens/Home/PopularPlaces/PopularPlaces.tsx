@@ -36,7 +36,7 @@ const PopularPlaces: React.FC<PopularPlacesProps> = () => {
               subTitle={subTitle}
               parallaxProps={parallaxProps}
               onPress={_onPlaceItemPressed}>
-              <ShopCardInfo data={item} />
+              {/*<ShopCardInfo data={item} />*/}
             </Card>
           );
         }}

@@ -9,15 +9,43 @@ import DishItem from '@src/components/common/DishItem';
 import {mockPlaceDetails} from '@src/data/mock-places';
 import styles from './styles';
 import BasketSummary from './BasketSummary';
+import {Shop} from "@src/models/shop";
+import {ShopService} from "@src/services/shop.service";
+import {CategoryService} from "@src/services/category.service";
+import {SubSink} from "@src/utils/subsink";
 
 type PlaceDetailsProps = {};
 
-const PlaceDetails: React.FC<PlaceDetailsProps> = () => {
+const ShopDetails: React.FC<PlaceDetailsProps> = () => {
+
+  const subs = new SubSink();
+
   const {
     colors: {primary, border, card},
   } = useTheme();
 
   const [scrollY] = React.useState(new Animated.Value(0));
+  const [shop, setShop] = React.useState(new Shop());
+  const [categories, setCategories] = React.useState([]);
+
+  React.useEffect(() => {
+    subs.unsubscribe();
+    subs.add(ShopService.getCurrentShop().subscribe(s => {
+      if (s) {
+        setShop(s);
+        subs.add(CategoryService.observeCategoriesByShop(s.uid).subscribe(categories => {
+          if (categories) {
+            setCategories(categories.map(c => {
+              c.items = c.items.map(item => {
+                return {...item, id: item.uid, title: item.name};
+              });
+              return {...c, title: c.name, data: c.items};
+            }) as any);
+          }
+        }));
+      }
+    }));
+  }, []);
 
   const coverTranslateY = scrollY.interpolate({
     inputRange: [-4, 0, 10],
@@ -53,9 +81,9 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = () => {
                     ],
                   },
                 ]}>
-                {mockPlaceDetails.coverImage && (
+                {shop.photoUrl ? (
                   <Animated.Image
-                    source={mockPlaceDetails.coverImage}
+                    source={{uri: shop.photoUrl}}
                     style={[
                       styles.coverPhoto,
                       {
@@ -67,13 +95,13 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = () => {
                       },
                     ]}
                   />
-                )}
+                ) : <Text> </Text>}
               </Animated.View>
-              <HeadingInformation data={mockPlaceDetails} />
-              <PopularDishes />
+              <HeadingInformation data={shop} />
+              {/*<PopularDishes />*/}
             </>
           }
-          sections={mockPlaceDetails.dishSection || []}
+          sections={categories || []}
           keyExtractor={(item) => item.title}
           stickySectionHeadersEnabled={false}
           scrollToLocationOffset={5}
@@ -122,4 +150,4 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = () => {
     </SafeAreaView>
   );
 };
-export default PlaceDetails;
+export default ShopDetails;

@@ -11,14 +11,14 @@ const DishesAlsoOrdered: React.FC<DishesAlsoOrderedProps> = () => {
   return (
     <Section title="People also ordered">
       <Container style={styles.carouselContainer}>
-        <Carousel
-          data={mockDishDetails.sideDishes || []}
-          itemWidth={Dimensions.get('window').width - 50}
-          renderContent={(dishSection: DishSection) => {
-            const dishes = dishSection.data[0];
-            return <DishItem data={dishes} />;
-          }}
-        />
+        {/*<Carousel*/}
+        {/*  data={mockDishDetails.sideDishes || []}*/}
+        {/*  itemWidth={Dimensions.get('window').width - 50}*/}
+        {/*  renderContent={(dishSection: DishSection) => {*/}
+        {/*    const dishes = dishSection.data[0];*/}
+        {/*    return <DishItem data={dishes} />;*/}
+        {/*  }}*/}
+        {/*/>*/}
       </Container>
     </Section>
   );

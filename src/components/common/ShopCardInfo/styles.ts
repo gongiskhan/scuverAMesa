@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {lightTheme} from "@src/styles/theme";
 
 export default StyleSheet.create({
   container: {
@@ -11,6 +12,7 @@ export default StyleSheet.create({
     marginTop: -5,
   },
   ratingContainer: {
+    color: lightTheme.colors.tertiary
   },
   buttonContainer: {
     flexDirection: 'row',

@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {lightTheme} from "@src/styles/theme";
 
 export default StyleSheet.create({
   container: {
@@ -27,5 +28,6 @@ export default StyleSheet.create({
     marginTop: 2,
     marginBottom: 10,
     fontSize: 12,
+    color: lightTheme.colors.secondary
   },
 });

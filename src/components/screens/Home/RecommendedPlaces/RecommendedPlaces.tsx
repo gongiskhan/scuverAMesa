@@ -36,7 +36,7 @@ const RecommendedPlaces: React.FC<RecommendedPlacesProps> = () => {
               subTitle={subTitle}
               parallaxProps={parallaxProps}
               onPress={_onPlaceItemPressed}>
-              <ShopCardInfo data={item} />
+              {/*<ShopCardInfo data={item} />*/}
             </Card>
           );
         }}

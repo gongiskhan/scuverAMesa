@@ -6,6 +6,7 @@ import styles from './styles';
 import {Shop} from "@src/models/shop";
 import ShopCardInfo from "@src/components/common/ShopCardInfo";
 import {DaySchedule} from "@src/models/submodels/timetable";
+import {ShopService} from "@src/services/shop.service";
 
 type ShopListItemProps = {
   data: Shop;
@@ -18,7 +19,9 @@ const ShopListItem: React.FC<ShopListItemProps> = ({
   const navigation = useNavigation();
 
   const _onShopItemPressed = () => {
-    navigation.navigate('ShopDetailsScreen');
+    ShopService.setCurrentShop(data.uid).then(() => {
+      navigation.navigate('ShopDetailsScreen');
+    });
   };
 
   return (

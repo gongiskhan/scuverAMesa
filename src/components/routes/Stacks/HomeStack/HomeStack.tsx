@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Button, Icon, Text} from '@src/components/elements';
 import Home from '@src/components/screens/Home';
-import PlaceDetails from '@src/components/screens/PlaceDetails';
+import ShopDetails from '@src/components/screens/ShopDetails';
 import PlaceList from '@src/components/screens/PlaceList';
 import Checkout from '@src/components/routes/Stacks/CheckoutStack';
 import styles from './styles';
@@ -12,7 +12,7 @@ import {ScreenNavigationProps} from '../types';
 type HomeStackProps = {} & ScreenNavigationProps;
 type HomeStackParamList = {
   HomeScreen: undefined;
-  PlaceDetailsScreen: undefined;
+  ShopDetailsScreen: undefined;
   CheckoutScreen: undefined;
   PlaceListScreen: {
     title?: string;
@@ -72,15 +72,8 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
         component={Home}
       />
       <Stack.Screen
-        options={() => {
-          return {
-            headerTitle: 'Neapolitan Pizza',
-            headerRight: _renderPlaceDetailHeaderRight,
-            headerRightContainerStyle: styles.headerRightContainer,
-          };
-        }}
-        name="PlaceDetailsScreen"
-        component={PlaceDetails}
+        name="ShopDetailsScreen"
+        component={ShopDetails}
       />
       <Stack.Screen
         options={({route: {params}}) => {

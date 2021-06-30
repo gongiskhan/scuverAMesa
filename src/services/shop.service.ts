@@ -19,7 +19,7 @@ class ShopServiceClass {
   shopHelper = ShopHelper;
 
   // @ts-ignore
-  private currentShop$ = new BehaviorSubject<Shop>(null);
+  private currentShop$ = new BehaviorSubject<Shop | null>(null);
   private currentShopSub = new Subscription();
   shops: Array<Shop> = [];
   foodTypes: Array<FoodType> = [];
@@ -101,22 +101,22 @@ class ShopServiceClass {
     this.shops.forEach(shop => {
       shop.foodType = foodTypes.find(ft => shop.foodTypesId[0] === ft.uid)?.names[0] || '';
       shop.foodType = shop.foodType.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
-      console.log('shop.foodType', shop.foodType);
     });
   }
 
-  setCurrentShop(uid: string) {
-    if (this.currentShop$.value?.uid === uid) return;
-
-    this.currentShopSub.unsubscribe();
-    this.currentShopSub = this.observeShop(uid).subscribe(shop => this.currentShop$.next(shop));
+  setCurrentShop(uid: string): Promise<Shop> {
+    return new Promise(resolve => {
+      this.currentShopSub.unsubscribe();
+      this.currentShopSub = this.observeShop(uid).subscribe(shop => this.currentShop$.next(shop));
+      resolve();
+    });
   }
 
   getCurrentShop() {
     return this.currentShop$.asObservable();
   }
 
-  async getShop(uid: string): Promise<Shop> {
+  async getShop(uid: string): Promise<Shop | null> {
     return this.observeShop(uid).pipe(take(1)).toPromise();
   }
 
@@ -136,8 +136,18 @@ class ShopServiceClass {
     return this.firestoreService.removeRecord('shops', uid);
   }
 
-  observeShop(uid: string): Observable<Shop> {
-    return this.firestoreService.observeRecord('shops', uid).pipe(map((shop: Shop) => shop ? {...(new Shop()), ...shop} as Shop : new Shop()));
+  observeShop(uid: string): Observable<Shop | null> {
+    return new Observable(observer => {
+      const currentShop = this.shops && this.shops.find(s => s.uid === uid);
+      if (currentShop) {
+        observer.next(currentShop);
+      }
+      this.firestoreService.observeRecord('shops', uid).subscribe(record => {
+        const shop = record.data();
+        const currentShop = this.shops && this.shops.find(s => s.uid === uid);
+        observer.next(shop ? {...new Shop(), ...currentShop, ...shop} as Shop : null);
+      });
+    });
   }
 
   observeShops(): Observable<Shop[]> {
