@@ -21,14 +21,14 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
   } = useTheme();
   return (
     <View style={styles.container}>
-      <View style={styles.ratingContainer}>
+      <View style={{...styles.ratingContainer, position: 'absolute', top: -40, right: 10}}>
         <Rating
-          value={data.rating}
-          itemSize={16}
-          readonly
-          ratingStarBackgroundColor={ratingStarBackgroundColor}
+            value={data.rating || 0}
+            itemSize={16}
+            readonly
+            ratingStarBackgroundColor={ratingStarBackgroundColor}
+            numberOfRatings={0}
         />
-        <Text>{`(${data.reviewsLength})`}</Text>
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -36,21 +36,26 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
           icon={<Icon isPrimary name="map-marker-alt" size={10} />}>
           <Text isPrimary style={styles.buttonText}>{`${data.distance}~km`}</Text>
         </Button>
+        {/*<Button*/}
+        {/*    style={[styles.button, {backgroundColor: border}]}*/}
+        {/*    icon={<Icon isPrimary name="motorcycle" size={10} />}>*/}
+        {/*  <Text isPrimary style={styles.buttonText}>{`~${data.deliveryFee}€`}</Text>*/}
+        {/*</Button>*/}
         <Button
           style={[styles.button, {backgroundColor: border}]}
           icon={<Icon isPrimary name="clock" size={10} />}>
           <Text isPrimary style={styles.buttonText}>{`${preparationTime}'`}</Text>
         </Button>
-        <Button
-            style={[styles.button, {backgroundColor: border}]}
-            icon={<Icon isPrimary name="euro-sign" size={10} />}>
-          <Text isPrimary style={styles.buttonText}>{`${data.deliveryFee}`}</Text>
-        </Button>
-        <Text>Horário:
-        {data.todaySchedule?.workingPeriods?.map(s => {
-          return `${s.startTime}-${s.endTime}`
-        })}
-        </Text>
+        {/*<Button*/}
+        {/*    style={[styles.button, {backgroundColor: border}]}*/}
+        {/*    icon={<Icon isPrimary name="clock" size={10} />}>*/}
+          <Text isPrimary style={{...styles.buttonText, marginLeft: 10, marginTop: 10}}>
+            <Text isPrimary style={{...styles.buttonText, fontWeight: 'bold'}}>Horário: </Text>
+            {data.todaySchedule?.workingPeriods?.map((s, it) => {
+              return ` ${it ? '/ ' : ''}${s.startTime}-${s.endTime}`
+            })}
+          </Text>
+        {/*</Button>*/}
       </View>
     </View>
   );

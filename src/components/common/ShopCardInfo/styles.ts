@@ -11,7 +11,6 @@ export default StyleSheet.create({
     marginTop: -5,
   },
   ratingContainer: {
-    marginTop: 10,
   },
   buttonContainer: {
     flexDirection: 'row',

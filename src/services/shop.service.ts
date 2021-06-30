@@ -2,61 +2,59 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Shop } from '../models/shop';
 import { FirestoreService } from './firestore-utils/firestore.service';
 import { map, take } from 'rxjs/operators';
-import {DaySchedule} from "@src/models/submodels/timetable";
 import {LocationHelper} from "@src/utils/location-helper";
-// import GetLocation from 'react-native-get-location';
+import Geolocation from '@react-native-community/geolocation';
 import {ShopHelper} from "@src/utils/shop-helper";
 import {MyTime} from "@src/utils/time-helper";
 import {ReviewService} from "@src/services/review.service";
 import {FoodType} from "@src/models/food-type";
+import {FoodTypeService} from "@src/services/food-type.service";
 
 class ShopServiceClass {
+
+  firestoreService = FirestoreService;
+  reviewService = ReviewService;
+  foodTypeService = FoodTypeService;
+  locationHelper = LocationHelper;
+  shopHelper = ShopHelper;
 
   // @ts-ignore
   private currentShop$ = new BehaviorSubject<Shop>(null);
   private currentShopSub = new Subscription();
-  firestoreService = FirestoreService;
   shops: Array<Shop> = [];
   foodTypes: Array<FoodType> = [];
-  locationHelper = LocationHelper;
   location: any = null;
-  shopHelper = ShopHelper;
-  reviewService = ReviewService;
 
   constructor(
   ) {
-    // GetLocation.getCurrentPosition({
-    //   enableHighAccuracy: true,
-    //   timeout: 15000,
-    // })
-    // .then((location: any) => {
-    //   console.log('LOCATION', location);
-    //   this.location = location;
-    //   this.startObservingShops();
-    // })
-    // .catch((error: any) => {
-    //   const { code, message } = error;
-    //   console.warn(code, message);
-    //   this.location = null;
-      this.startObservingShops();
-    // });
+    Geolocation.getCurrentPosition((location: any) => {
+      console.log('LOCATION', location);
+      this.location = location;
+    }, (error: any) => {
+      console.log('LOCATION ERROR', error);
+      this.location = null;
+    });
   }
 
-  startObservingShops() {
-    this.observeShops().subscribe(shops => {
-      this.shops = shops;
-      if (this.location) {
-        this.calculateShopDistances();
-        this.calculateShopDeliveryFees();
-      }
-      this.setShopTodaySchedules();
-      this.setRatings();
+  observeCompleteShops() {
+    return new Observable(observer => {
+      this.observeShops().subscribe(async shops => {
+        this.shops = shops;
+        if (this.location) {
+          this.calculateShopDistances();
+          // this.calculateShopDeliveryFees();
+        }
+        this.setShopTodaySchedules();
+        this.setRatings();
+        await this.setFoodTypes();
+        observer.next(this.shops);
+      });
     });
   }
 
   calculateShopDistances() {
     this.shops.forEach(shop => {
-      const distanceInKm = this.locationHelper.getRadiusDistanceInKm(shop.address.coordinates, this.location);
+      const distanceInKm = this.locationHelper.getRadiusDistanceInKm(shop.address.coordinates, this.location.coords);
       shop.distance = Math.round(distanceInKm) + 1;
     });
   }
@@ -88,13 +86,22 @@ class ShopServiceClass {
   setRatings() {
     this.reviewService.observeShopRatings().subscribe(l =>  {
       l.forEach((v, k) => {
-        const shop = this.shops.find(s => s.uid === k);
+        const shop = this.shops.find(s => s.uid == k);
         if (shop) {
           const spl = v.split(':');
           shop.rating = spl[0] as any as number;
           shop.reviewsLength = spl[1] as any as number;
         }
       });
+    });
+  }
+
+  async setFoodTypes() {
+    const foodTypes = await this.foodTypeService.getFoodTypes();
+    this.shops.forEach(shop => {
+      shop.foodType = foodTypes.find(ft => shop.foodTypesId[0] === ft.uid)?.names[0] || '';
+      shop.foodType = shop.foodType.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+      console.log('shop.foodType', shop.foodType);
     });
   }
 
@@ -134,18 +141,16 @@ class ShopServiceClass {
   }
 
   observeShops(): Observable<Shop[]> {
-    return this.firestoreService.observeCollection('shops').pipe(map((docs) => {
+    return this.firestoreService.observeCollection('shops').pipe(map((sps) => {
 
       const shops: Array<Shop> = [];
 
-      docs.forEach((doc: any) => {
-        const shop = doc.data() as Shop;
+      sps.forEach((shp: any) => {
+        const shop = shp as Shop;
         if (shop.inShopEnabled) {
           shops.push(shop);
         }
       });
-
-      console.log('shops.length', shops.length);
 
       return shops.map(shop => shop ? {...(new Shop()), ...shop} as Shop : new Shop())
     }));

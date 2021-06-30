@@ -110,10 +110,8 @@ class ReviewServiceClass {
 
   observeReviews(): Observable<Review[]> {
     return new Observable(observer => {
-      this.firestoreService.observeCollection('reviews').pipe(map((querySnapshot) => {
-        const revs: Array<Review> = [];
-        querySnapshot.docs.forEach((doc: any) => revs.push(doc.data()));
-        return revs.map(review => review ? {...new Review(), ...review} : null)
+      this.firestoreService.observeCollection('reviews').pipe(map((reviews) => {
+        return reviews.map((review: any) => review ? {...new Review(), ...review} : null)
       })).subscribe(result => {
         observer.next(result as any);
       });

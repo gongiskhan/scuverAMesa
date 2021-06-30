@@ -116,7 +116,13 @@ class FirestoreServiceClass {
 
   observeCollection(collection: string): Observable<any> {
     return new Observable(observer => {
-      FirebaseService.firestore.collection(collection).onSnapshot(observer);
+      FirebaseService.firestore.collection(collection).onSnapshot(docs => {
+        const items: any = [];
+        docs.forEach(doc => {
+          items.push(doc.data());
+        });
+        observer.next(items);
+      });
     });
   }
 

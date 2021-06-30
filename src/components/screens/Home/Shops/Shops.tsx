@@ -9,6 +9,7 @@ import ShopListItem from "@src/components/common/ShopListItem";
 import {useEffect, useState} from "react";
 import {ShopService} from "@src/services/shop.service";
 import {Shop} from "@src/models/shop";
+import {lightTheme} from "@src/styles/theme";
 
 type ShopsProps = {};
 
@@ -17,15 +18,14 @@ const Shops: React.FC<ShopsProps> = () => {
   const [shops, setShops] = useState([]);
 
   useEffect(() => {
-    console.log('AQUI');
-    ShopService.observeShops().subscribe(shopz => {
-      console.log('shopz.length', shopz.length);
+    ShopService.observeCompleteShops().subscribe((shopz: any) => {
+      // console.log('shopz', shopz.map(s => s.foodType));
       setShops(shopz as any);
     });
   }, []);
 
   return (
-    <Container style={styles.container}>
+    <Container style={{...styles.container, backgroundColor: lightTheme.colors.background}}>
       {shops.map((item: Shop) => {
         return <ShopListItem
             key={item.uid}
