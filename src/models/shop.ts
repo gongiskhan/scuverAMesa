@@ -28,6 +28,7 @@ export class Shop {
     public bookingSettings: BookingSettings = new BookingSettings(),
     public iban: string = '',
     public promo: number = 0,
+    public inShopEnabled = false
   ) {}
 
 }

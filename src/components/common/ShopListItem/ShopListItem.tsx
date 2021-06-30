@@ -36,7 +36,7 @@ const ShopListItem: React.FC<ShopListItemProps> = ({
   return (
     <Touchable onPress={_onShopItemPressed}>
       <Container style={styles.container}>
-        <Image style={styles.image} source={{uri: photoUrl}} />
+        {photoUrl ? <Image style={styles.image} source={{uri: photoUrl}} /> : ''}
         <View style={styles.placeInfoContainer}>
           <View style={styles.placeInfo}>
             <Text style={styles.placeTitle}>{name}</Text>

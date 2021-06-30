@@ -57,7 +57,7 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
           <Text isPrimary style={styles.buttonText}>{`${fee}`}</Text>
         </Button>
         <Text>Horário:
-        {schedule?.workingPeriods.map(s => {
+        {schedule?.workingPeriods?.map(s => {
           return `${s.startTime}-${s.endTime}`
         })}
         </Text>

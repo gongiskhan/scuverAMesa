@@ -16,7 +16,7 @@ class ShopServiceClass {
   private currentShop$ = new BehaviorSubject<Shop>(null);
   private currentShopSub = new Subscription();
   firestoreService = FirestoreService;
-  shops: Array<Shop> = [];
+  // shops: Array<Shop> = [];
   foodTypes: Array<FoodType> = [];
 
   shopDistances      = new Map<string, number>(); // <- (shopId, distance)
@@ -46,21 +46,21 @@ class ShopServiceClass {
     //   const { code, message } = error;
     //   console.warn(code, message);
     //   this.location = null;
-      this.startObservingShops();
+    //   this.startObservingShops();
     // });
   }
 
-  startObservingShops() {
-    this.observeShops().subscribe(shops => {
-      this.shops = shops;
-      if (this.location) {
-        this.calculateShopDistances();
-        this.calculateShopDeliveryFees();
-      }
-      this.setShopTodaySchedules();
-      this.setRatings();
-    });
-  }
+  // startObservingShops() {
+  //   this.observeShops().subscribe(shops => {
+  //     this.shops = shops;
+  //     if (this.location) {
+  //       this.calculateShopDistances();
+  //       this.calculateShopDeliveryFees();
+  //     }
+  //     this.setShopTodaySchedules();
+  //     this.setRatings();
+  //   });
+  // }
 
   calculateShopDistances() {
     this.shopDistances.clear();
@@ -152,7 +152,10 @@ class ShopServiceClass {
       const shops: Array<Shop> = [];
 
       docs.forEach((doc: any) => {
-        shops.push(doc.data() as Shop);
+        const shop = doc.data() as Shop;
+        if (shop.inShopEnabled) {
+          shops.push(shop);
+        }
       });
 
       console.log('shops.length', shops.length);
