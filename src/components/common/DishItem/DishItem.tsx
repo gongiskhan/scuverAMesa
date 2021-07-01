@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Image, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Container, Text, Touchable} from '@src/components/elements';
-import {Dish} from '@src/data/mock-places';
 import styles from './styles';
 import {Item} from "@src/models/item";
 
@@ -14,7 +13,7 @@ const DishItem: React.FC<DishItemProps> = ({data}) => {
   const navigation = useNavigation();
 
   const _onPlaceItemPressed = () => {
-    navigation.navigate('DishDetailsModal');
+    navigation.navigate('DishDetailsModal', {data});
   };
 
   return (
@@ -26,7 +25,7 @@ const DishItem: React.FC<DishItemProps> = ({data}) => {
             <Text style={styles.placeTitle}>{data.name}</Text>
             <Text style={styles.placeSubTitle}>{data.description}</Text>
             <Text isPrimary isBold>
-              ${data.price}
+              €{data.price}
             </Text>
           </View>
         </View>

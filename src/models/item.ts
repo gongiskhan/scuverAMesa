@@ -1,6 +1,7 @@
 export class Item {
 
   constructor(
+    public id: string = '',
     public uid: string = '',
     public categoryId: string = '',
     public name: string = '',
@@ -14,7 +15,8 @@ export class Item {
     public isWeightBased: boolean = false,
     public minWeight: number = 1,
     public maxWeight: number = 5,
-    public optionGroupsId: string[] = []
+    public optionGroupsId: string[] = [],
+
   ) {}
 
 }

@@ -6,23 +6,28 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import {useTheme, useNavigation} from '@react-navigation/native';
+import {useTheme, useNavigation, Route} from '@react-navigation/native';
 import {Text, Button} from '@src/components/elements';
-import {mockDishDetails, Dish} from '@src/data/mock-places';
 import CartContext from '@src/context/cart-context';
 import HeadingInformation from './HeadingInformation';
 import SideDishes from './SideDishes';
 import AddToBasketForm from './AddToBasketForm';
 import {formatCurrency} from '@src/utils/number-formatter';
 import styles from './styles';
+import {useEffect, useState} from "react";
+import {Item} from "@src/models/item";
+const faker = require('faker');
 
-type DishDetailsProps = {};
+type DishDetailsProps = {
+  route: Route<any>
+};
 
-export const DishDetails: React.FC<DishDetailsProps> = () => {
-  const [totalPrice, setTotalPrice] = React.useState(
-    parseFloat(mockDishDetails.price),
-  );
-  const [selectedSideDishes, setSelectedSideDishes] = React.useState<Dish[]>(
+export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
+
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [data, setData]: any = useState({});
+
+  const [selectedSideDishes, setSelectedSideDishes] = React.useState<Item[]>(
     [],
   );
   const [scrollY] = React.useState(new Animated.Value(0));
@@ -32,19 +37,38 @@ export const DishDetails: React.FC<DishDetailsProps> = () => {
   const {goBack} = useNavigation();
   const {updateCartItems} = React.useContext(CartContext);
 
+  useEffect(() => {
+    // console.log('data', (route.params as any).data);
+    const d = (route.params as any).data;
+    d.sideDishes = [
+      {
+        title: 'Cake',
+        data: Array(5)
+          .fill(0)
+          .map((_) => ({
+            id: faker.random.uuid(),
+            title: faker.commerce.productName(),
+            description: faker.lorem.lines(2),
+            price: faker.commerce.price(2, 10),
+            image: require('@src/assets/dish-details/dish-1.jpg'),
+          })),
+      }];
+    setData((route.params as any).data as Item);
+  }, []);
+
   const addSideDishToBasket = React.useCallback(
-    (dish: Dish) => {
+    (dish: Item) => {
       const existedDishIndex = selectedSideDishes.find(
-        (item: Dish) => item.id === dish.id,
+        (item: Item) => item.id === dish.id,
       );
       if (existedDishIndex) {
         setSelectedSideDishes(
-          selectedSideDishes.filter((item: Dish) => item.id !== dish.id),
+          selectedSideDishes.filter((item: Item) => item.id !== dish.id),
         );
-        setTotalPrice(totalPrice - parseFloat(existedDishIndex.price));
+        setTotalPrice(data?.price - existedDishIndex.price);
       } else {
         setSelectedSideDishes([...selectedSideDishes, dish]);
-        setTotalPrice(totalPrice + parseFloat(dish.price));
+        setTotalPrice(totalPrice + dish.price);
       }
     },
     [selectedSideDishes, totalPrice],
@@ -53,11 +77,11 @@ export const DishDetails: React.FC<DishDetailsProps> = () => {
   const updateTotalDishAmount = React.useCallback(
     (amount: number) => {
       const totalSelectedDishPrice = selectedSideDishes.reduce(
-        (prevValue, currentValue) => prevValue + parseFloat(currentValue.price),
+        (prevValue, currentValue) => prevValue + currentValue.price,
         0,
       );
       setTotalPrice(
-        parseFloat(mockDishDetails.price) * amount + totalSelectedDishPrice,
+        parseFloat(data.price) * amount + totalSelectedDishPrice,
       );
     },
     [selectedSideDishes],
@@ -67,7 +91,7 @@ export const DishDetails: React.FC<DishDetailsProps> = () => {
     updateCartItems(
       [
         {
-          dish: mockDishDetails,
+          dish: data,
           sideDishes: selectedSideDishes,
         },
       ],
@@ -127,7 +151,7 @@ export const DishDetails: React.FC<DishDetailsProps> = () => {
                 },
               ]}>
               <Animated.Image
-                source={mockDishDetails.coverImage || {}}
+                source={data?.photoURL ? {uri: data.photoURL} : require('../../../assets/app/dinner.png')}
                 style={[
                   styles.coverPhoto,
                   {
@@ -140,10 +164,10 @@ export const DishDetails: React.FC<DishDetailsProps> = () => {
                 ]}
               />
             </Animated.View>
-            <HeadingInformation data={mockDishDetails} />
+            <HeadingInformation data={data} />
             <SideDishes
-              data={mockDishDetails}
-              addSideDishToBasket={addSideDishToBasket}
+              data={data}
+              addSideDishToBasket={() => {}}
             />
             <AddToBasketForm updateTotalDishAmount={updateTotalDishAmount} />
           </Animated.ScrollView>
@@ -153,7 +177,7 @@ export const DishDetails: React.FC<DishDetailsProps> = () => {
             childrenContainerStyle={styles.addToBasketButton}
             onPress={onAddToBasketButtonPressed}>
             <Text style={styles.addToBasketButtonText}>
-              Add to Basket - {formatCurrency(totalPrice)}
+              Adicionar - {formatCurrency(totalPrice)}
             </Text>
           </Button>
         </View>
@@ -165,7 +189,7 @@ export const DishDetails: React.FC<DishDetailsProps> = () => {
               backgroundColor: background,
             },
           ]}>
-          <Text style={styles.headerTitle}>{mockDishDetails.title}</Text>
+          <Text style={styles.headerTitle}>{data.name}</Text>
         </Animated.View>
       </View>
     </SafeAreaView>

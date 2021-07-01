@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {Dish} from '@src/data/mock-places';
+import {Option} from "@src/models/option";
+import {Item} from "@src/models/item";
 
 export type CartItem = {
-  dish: Dish;
-  sideDishes: Dish[];
+  dish: Item;
+  sideDishes: Option[];
 };
 
 export type CartState = {

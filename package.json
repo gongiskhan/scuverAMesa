@@ -81,6 +81,6 @@
     "typescript": "~4.0.0"
   },
   "private": true,
-  "name": "scuverAMesa",
+  "name": "com.appmob.scuveramesa",
   "version": "1.0.0"
 }
