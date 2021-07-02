@@ -17,9 +17,7 @@ import {
   ColorSchemeName,
 } from 'react-native-appearance';
 import RootNavigation from '@src/components/routes/RootNavigation';
-import CartProvider from '@src/components/common/CartProvider';
 import ThemeContext from '@src/context/theme-context';
-import AuthProvider from '@src/components/common/AuthProvider/AuthProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppReviewConfig} from '@src/constants';
 
@@ -85,11 +83,7 @@ const App = () => {
           setTheme: _setTheme,
           setUseSystemTheme,
         }}>
-        <AuthProvider>
-          <CartProvider>
-            <RootNavigation />
-          </CartProvider>
-        </AuthProvider>
+        <RootNavigation />
       </ThemeContext.Provider>
     </AppearanceProvider>
   );

@@ -6,14 +6,14 @@ import PaymentMethod from './PaymentMethod';
 import styles from './styles';
 import PlaceOrder from './PlaceOrder';
 import DishesAlsoOrdered from './DishesAlsoOrdered';
-import CartContext from '@src/context/cart-context';
 
 type BasketProps = {};
 
 const shippingFee = 5;
 
 const Basket: React.FC<BasketProps> = () => {
-  const {cartItems, totalPrice} = React.useContext(CartContext);
+  const cartItems: any = [];
+  const totalPrice = 0;
   return (
     <View style={styles.rootContainer}>
       <ScrollView

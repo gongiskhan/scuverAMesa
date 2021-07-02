@@ -9,7 +9,11 @@ class FirestoreServiceClass {
   ) { }
 
   getRecord(collection: string, uid: string): Promise<any> {
-    return FirebaseService.firestore.collection(collection).doc(uid).get();
+    return new Promise(resolve => {
+      FirebaseService.firestore.collection(collection).doc(uid).get().then(querySnapshot => {
+        resolve(querySnapshot.data());
+      });
+    });
   }
 
   getRecordByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any) {
@@ -28,37 +32,48 @@ class FirestoreServiceClass {
   //   }).valueChanges().pipe(take(1), map(value => value[0])).toPromise();
   // }
   //
-  // getRecordsByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any): Promise<any[]> {
-  //   return FirebaseService.firestore.collection(collection, (collectionRef) => {
-  //     return collectionRef.where(property, filterOp, value);
-  //   }).valueChanges().pipe(take(1)).toPromise();
-  // }
-  //
-  // getRecordsByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Promise<any[]> {
-  //   return FirebaseService.firestore.collection(collection, (collectionRef) => {
-  //     let query: Query;
-  //     properties.forEach((property, i) => {
-  //       const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
-  //       if (!query) query = collectionRef.where(property, op, values[i]);
-  //       else query = query.where(property, op, values[i]);
-  //     });
-  //     return query;
-  //   }).valueChanges().pipe(take(1)).toPromise();
-  // }
+  getRecordsByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any): Promise<any[]> {
 
-  // addOrUpdateRecord(collection: string, record: any) {
-  //   return new Promise((resolve, reject) => {
-  //     if (record.uid) {
-  //       return this.updateRecord(collection, record)
-  //       .then((rec: any) => resolve(rec))
-  //       .catch(reject);
-  //     } else {
-  //       return this.addRecord(collection, record)
-  //       .then((rec: any) => resolve(rec))
-  //       .catch(reject);
-  //     }
-  //   });
-  // }
+    return new Promise(resolve => {
+      FirebaseService.firestore.collection(collection).where(property, filterOp, value).get().then(querySnapshot => {
+        const results: any = [];
+        querySnapshot.forEach(doc => {
+          results.push(doc.data());
+        });
+        resolve(results);
+      });
+    });
+  }
+
+  getRecordsByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Promise<any[]> {
+    return new Promise(resolve => {
+      let query: any;
+      properties.forEach((property, i) => {
+        const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
+        if (!query) query = FirebaseService.firestore.collection(collection).where(property, op, values[i]);
+        else query = query.where(property, op, values[i]);
+      });
+      query.onSnapshot().toPromise().then((querySnap: any) => {
+        const results: any = [];
+        querySnap.docs.forEach((doc: any) => results.push(doc.data()));
+        resolve(results);
+      });
+    });
+  }
+
+  addOrUpdateRecord(collection: string, record: any) {
+    return new Promise((resolve, reject) => {
+      if (record.uid) {
+        return this.updateRecord(collection, record)
+        .then((rec: any) => resolve(rec))
+        .catch(reject);
+      } else {
+        return this.addRecord(collection, record)
+        .then((rec: any) => resolve(rec))
+        .catch(reject);
+      }
+    });
+  }
 
   removeRecord(collection: string, uid: string) {
     return FirebaseService.firestore.collection(collection).doc(uid).delete();
@@ -76,18 +91,21 @@ class FirestoreServiceClass {
   //   }).valueChanges().pipe(map(value => value[0]));
   // }
   //
-  // observeRecordByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
-  //   return FirebaseService.firestore.collection(collection, (collectionRef) => {
-  //     let query: Query;
-  //     properties.forEach((property, i) => {
-  //       const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
-  //       if (!query) query = collectionRef.where(property, op, values[i]);
-  //       else query = query.where(property, op, values[i]);
-  //     });
-  //     return query.limit(1);
-  //   }).valueChanges().pipe(map(value => value[0]));
-  // }
-  //
+  observeRecordByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
+    return new Observable(observer => {
+      const q = FirebaseService.firestore.collection(collection);
+      let query: any;
+      properties.forEach((property, i) => {
+        const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
+        if (!query) query = q.where(property, op, values[i]);
+        else query = query.where(property, op, values[i]);
+      });
+      query.limit(1).onSnapshot().subscribe((querySnap: any) => {
+        querySnap.docs.forEach((doc: any) => observer.next(doc.data()));
+      });
+    });
+  }
+
 
   observeRecordsByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any): Observable<any> {
     return new Observable(observer => {
@@ -101,18 +119,21 @@ class FirestoreServiceClass {
     });
   }
 
-  //
-  // observeRecordsByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
-  //   return FirebaseService.firestore.collection(collection, (collectionRef) => {
-  //     let query: Query;
-  //     properties.forEach((property, i) => {
-  //       const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
-  //       if (!query) query = collectionRef.where(property, op, values[i]);
-  //       else query = query.where(property, op, values[i]);
-  //     });
-  //     return query;
-  //   }).valueChanges();
-  // }
+  observeRecordsByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
+    return new Observable(observer => {
+      let query: any;
+      properties.forEach((property, i) => {
+        const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
+        if (!query) query = FirebaseService.firestore.collection(collection).where(property, op, values[i]);
+        else query = query.where(property, op, values[i]);
+      });
+      query.onSnapshot().subscribe((querySnap: any) => {
+        const results: any = [];
+        querySnap.docs.forEach((doc: any) => results.push(doc.data()));
+        observer.next(results);
+      });
+    });
+  }
 
   observeCollection(collection: string): Observable<any> {
     return new Observable(observer => {
@@ -130,23 +151,23 @@ class FirestoreServiceClass {
     return FirebaseService.firestore.collection(collection).get();
   }
 
-  // private addRecord(collection, record): Promise<any> {
-  //   return new Promise((resolve, reject) => {
-  //     FirebaseService.firestore.collection(collection).add(record)
-  //     .then((r: DocumentReference) => {
-  //       record.uid = r.id;
-  //       this.updateRecord(collection, record).then(resolve).catch(reject);
-  //     });
-  //   });
-  // }
+  private addRecord(collection: any, record: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      FirebaseService.firestore.collection(collection).add(record)
+      .then((r) => {
+        record.uid = r.id;
+        this.updateRecord(collection, record).then(resolve).catch(reject);
+      });
+    });
+  }
 
-  // private updateRecord(collection, record) {
-  //   return new Promise((resolve, reject) => {
-  //     FirebaseService.firestore.collection(collection).doc(record.uid).set({...record}, {merge: true})
-  //     .then(() => resolve(record))
-  //     .catch(reject);
-  //   });
-  // }
+  private updateRecord(collection: any, record: any) {
+    return new Promise((resolve, reject) => {
+      FirebaseService.firestore.collection(collection).doc(record.uid).set({...record}, {merge: true})
+      .then(() => resolve(record))
+      .catch(reject);
+    });
+  }
 }
 
 export const FirestoreService = new FirestoreServiceClass();

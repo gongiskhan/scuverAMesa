@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {View, Image} from 'react-native';
 import {Container, Text, Button} from '@src/components/elements';
-import AuthContext from '@src/context/auth-context';
 import useThemeColors from '@src/custom-hooks/useThemeColors';
 import styles from './styles';
 import {StackActions, useNavigation} from '@react-navigation/native';
@@ -35,7 +34,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
       ]}>
       <View style={styles.appIconContainer}>
         <Image
-          source={require('../../../assets/app/app_icon.png')}
+          source={require('../../../assets/app/app_icon.jpg')}
           style={styles.appIcon}
         />
       </View>

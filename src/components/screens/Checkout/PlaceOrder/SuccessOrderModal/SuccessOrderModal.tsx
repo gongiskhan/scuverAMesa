@@ -4,7 +4,6 @@ import {useNavigation} from '@react-navigation/native';
 import {StackActions} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {Container, Text, Button, Dialog} from '@src/components/elements';
-import CartContext from '@src/context/cart-context';
 import styles from './styles';
 
 type OrderSuccessModalProps = {
@@ -32,7 +31,6 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
       useNativeDriver: true,
     }).start();
   }, [isAnimationFinished, fadeIn, fadeOut]);
-  const {clearCart} = React.useContext(CartContext);
 
   const _onAnimationFinish = () => {
     setIsAnimationFinished(true);
@@ -44,13 +42,13 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
   };
 
   const _onOrderSomethingElseButtonPressed = () => {
-    clearCart();
+    console.log('CLEAR CART HERE');
     setIsVisble(false);
     navigation.navigate('HomeScreen');
   };
 
   const _onTrackOrderButtonPressed = () => {
-    clearCart();
+    console.log('CLEAR CART HERE');
     setIsVisble(false);
     navigation.dispatch(StackActions.replace('TrackOrderScreen'));
   };

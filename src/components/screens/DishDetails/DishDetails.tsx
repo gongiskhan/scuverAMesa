@@ -8,14 +8,17 @@ import {
 } from 'react-native';
 import {useTheme, useNavigation, Route} from '@react-navigation/native';
 import {Text, Button} from '@src/components/elements';
-import CartContext from '@src/context/cart-context';
 import HeadingInformation from './HeadingInformation';
-import SideDishes from './SideDishes';
 import AddToBasketForm from './AddToBasketForm';
 import {formatCurrency} from '@src/utils/number-formatter';
 import styles from './styles';
 import {useEffect, useState} from "react";
 import {Item} from "@src/models/item";
+import {OptionGroupService} from "@src/services/option-group.service";
+import {Option} from "@src/models/option";
+import {DishSection} from "@src/data/mock-places";
+import OptionGroups from "@src/components/screens/DishDetails/OptionGroups";
+import {OrderOption} from "@src/models/order-option";
 const faker = require('faker');
 
 type DishDetailsProps = {
@@ -27,7 +30,7 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [data, setData]: any = useState({});
 
-  const [selectedSideDishes, setSelectedSideDishes] = React.useState<Item[]>(
+  const [selectedOptionGroups, setSelectedOptionGroups] = React.useState<Item[]>(
     [],
   );
   const [scrollY] = React.useState(new Animated.Value(0));
@@ -35,48 +38,43 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
     colors: {background},
   } = useTheme();
   const {goBack} = useNavigation();
-  const {updateCartItems} = React.useContext(CartContext);
 
   useEffect(() => {
     // console.log('data', (route.params as any).data);
-    const d = (route.params as any).data;
-    d.sideDishes = [
-      {
-        title: 'Cake',
-        data: Array(5)
-          .fill(0)
-          .map((_) => ({
-            id: faker.random.uuid(),
-            title: faker.commerce.productName(),
-            description: faker.lorem.lines(2),
-            price: faker.commerce.price(2, 10),
-            image: require('@src/assets/dish-details/dish-1.jpg'),
-          })),
-      }];
-    setData((route.params as any).data as Item);
+    const d = (route.params as any).data as Item;
+    d.optionGroups = [];
+    d.optionGroupsId.forEach((ogUID, it) => {
+      OptionGroupService.getOptionGroup(ogUID).then(og => {
+        d.optionGroups.push(og);
+        console.log('d.optionGroups', d.optionGroups.map(o => o.options));
+        if (d.optionGroups.length >= d.optionGroupsId.length) {
+          setData(d);
+        }
+      });
+    });
   }, []);
 
-  const addSideDishToBasket = React.useCallback(
+  const addOptionGroupToBasket = React.useCallback(
     (dish: Item) => {
-      const existedDishIndex = selectedSideDishes.find(
+      const existedDishIndex = selectedOptionGroups.find(
         (item: Item) => item.id === dish.id,
       );
       if (existedDishIndex) {
-        setSelectedSideDishes(
-          selectedSideDishes.filter((item: Item) => item.id !== dish.id),
+        setSelectedOptionGroups(
+          selectedOptionGroups.filter((item: Item) => item.id !== dish.id),
         );
         setTotalPrice(data?.price - existedDishIndex.price);
       } else {
-        setSelectedSideDishes([...selectedSideDishes, dish]);
+        setSelectedOptionGroups([...selectedOptionGroups, dish]);
         setTotalPrice(totalPrice + dish.price);
       }
     },
-    [selectedSideDishes, totalPrice],
+    [selectedOptionGroups, totalPrice],
   );
 
   const updateTotalDishAmount = React.useCallback(
     (amount: number) => {
-      const totalSelectedDishPrice = selectedSideDishes.reduce(
+      const totalSelectedDishPrice = selectedOptionGroups.reduce(
         (prevValue, currentValue) => prevValue + currentValue.price,
         0,
       );
@@ -84,19 +82,14 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
         parseFloat(data.price) * amount + totalSelectedDishPrice,
       );
     },
-    [selectedSideDishes],
+    [selectedOptionGroups],
   );
 
   const onAddToBasketButtonPressed = () => {
-    updateCartItems(
-      [
-        {
-          dish: data,
-          sideDishes: selectedSideDishes,
-        },
-      ],
-      totalPrice,
-    );
+
+
+    console.log('ON ADD PRESSED');
+
     goBack();
   };
 
@@ -165,9 +158,27 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
               />
             </Animated.View>
             <HeadingInformation data={data} />
-            <SideDishes
+            <OptionGroups
               data={data}
-              addSideDishToBasket={() => {}}
+              addOptionToBasket={(option, optionGroup) => {
+                console.log('ADD OPTION TO BASKET', option);
+                let optionAlreadySelected = false;
+                let optionsFromThisGroupSelected = 0;
+                data?.optionsSelected?.forEach((opt: OrderOption) => {
+                  if (opt.name === option.name) {
+                    optionAlreadySelected = true;
+                  }
+                  optionGroup.options.forEach(o => {
+                    if (opt.name === o.name) {
+                      optionsFromThisGroupSelected++;
+                    }
+                  });
+                });
+                if (!optionAlreadySelected) {
+                  data.optionsSelected.push({...option, quantity: 1})
+                }
+                return !optionAlreadySelected;
+              }}
             />
             <AddToBasketForm updateTotalDishAmount={updateTotalDishAmount} />
           </Animated.ScrollView>

@@ -2,14 +2,15 @@ import * as React from 'react';
 import {View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Container, Button, Text} from '@src/components/elements';
-import CartContext from '@src/context/cart-context';
 import {formatCurrency} from '@src/utils/number-formatter';
 import styles from './styles';
 
 type BasketSummaryProps = {};
 
 const BasketSummary: React.FC<BasketSummaryProps> = () => {
-  const {cartItems, totalPrice} = React.useContext(CartContext);
+
+  const cartItems = [];
+  const totalPrice = 0;
   const navigation = useNavigation();
 
   const _onViewBasketButtonPressed = () => {
@@ -25,7 +26,7 @@ const BasketSummary: React.FC<BasketSummaryProps> = () => {
             onPress={_onViewBasketButtonPressed}>
             <View style={styles.viewBasketButtonTextContainer}>
               <Text isBold style={styles.viewBasketButtonText}>
-                View Basket
+                Mais
               </Text>
               <Text style={styles.cardItemText}>{`${cartItems.length} ${
                 cartItems.length > 1 ? 'items' : 'item'

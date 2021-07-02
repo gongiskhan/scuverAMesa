@@ -19,13 +19,11 @@ import ListRowItem from '@src/components/elements/List/ListRowItem';
 import {profile} from '@src/data/mock-profile';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
-import AuthContext from '@src/context/auth-context';
 
 type AccountProps = {};
 
 const Account: React.FC<AccountProps> = () => {
   const navigation = useNavigation();
-  const {signOut} = React.useContext(AuthContext);
   const chevronIconName = I18nManager.isRTL ? 'chevron-left' : 'chevron-right';
 
   const alertButtons: AlertButton[] = [
@@ -33,7 +31,7 @@ const Account: React.FC<AccountProps> = () => {
       text: 'Cancel',
       style: 'cancel',
     },
-    {text: 'OK', onPress: () => signOut()},
+    {text: 'OK', onPress: () => {console.log('LOG OUT HERE')}},
   ];
 
   const onLogoutButtonPressed = () => {

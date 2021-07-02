@@ -14,7 +14,7 @@ const HeadingInformation: React.FC<HeadingInformationProps> = ({data}) => {
       <Container style={styles.titleContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text isPrimary style={styles.title}>
-          ${price}
+          €{price}
         </Text>
       </Container>
       <Text style={styles.description}>{description}</Text>

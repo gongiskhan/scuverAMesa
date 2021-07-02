@@ -3,11 +3,11 @@ import {View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Container, Text, Section, Divider} from '@src/components/elements';
 import styles from './styles';
-import {CartItem} from '@src/context/cart-context';
 import {formatCurrency} from '@src/utils/number-formatter';
+import {OrderItem} from "@src/models/order-item";
 
 type OrderSummaryProps = {
-  cartItems: CartItem[];
+  cartItems: OrderItem[];
   totalPrice: number;
   shippingFee: number;
 };
@@ -35,11 +35,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             {cartItems.map((cartItem, cartItemIndex) => (
               <View key={cartItemIndex}>
                 <Text style={styles.mainDishText} isBold>
-                  {cartItem.dish.title}
+                  {cartItem.name}
                 </Text>
-                {cartItem.sideDishes.map((dish, dishIndex) => (
+                {cartItem.optionsSelected.map((dish, dishIndex) => (
                   <Text isSecondary key={dishIndex} style={styles.sideDishText}>
-                    {dish.title}
+                    {dish.name}
                   </Text>
                 ))}
               </View>

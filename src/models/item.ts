@@ -1,3 +1,6 @@
+import {OptionGroup} from "@src/models/option-group";
+import {OrderOption} from "@src/models/order-option";
+
 export class Item {
 
   constructor(
@@ -16,7 +19,8 @@ export class Item {
     public minWeight: number = 1,
     public maxWeight: number = 5,
     public optionGroupsId: string[] = [],
-
+    public optionGroups: OptionGroup[] = [],
+    public optionsSelected: OrderOption[] = []
   ) {}
 
 }
