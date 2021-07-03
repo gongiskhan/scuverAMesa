@@ -175,6 +175,9 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
                   });
                 });
                 if (!optionAlreadySelected) {
+                  if (!data.optionsSelected) {
+                    data.optionsSelected = [];
+                  }
                   data.optionsSelected.push({...option, quantity: 1})
                 }
                 return !optionAlreadySelected;
