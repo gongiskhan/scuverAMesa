@@ -40,7 +40,9 @@ const OptionGroups: React.FC<OptionGroupsProps> = ({
               <Container style={styles.checkBoxContainer}>
                 <CheckBox
                   label={option.name}
-                  onPress={onCheckBoxPress(option, section)}
+                  onPress={() => {
+                    return onCheckBoxPress(option, section);
+                  }}
                   rightElement={section.type === 'addable' ? <Text>+ €{option.price}</Text> : <Text> </Text>}
                 />
               </Container>

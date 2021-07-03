@@ -46,7 +46,6 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
     d.optionGroupsId.forEach((ogUID, it) => {
       OptionGroupService.getOptionGroup(ogUID).then(og => {
         d.optionGroups.push(og);
-        console.log('d.optionGroups', d.optionGroups.map(o => o.options));
         if (d.optionGroups.length >= d.optionGroupsId.length) {
           setData(d);
         }
@@ -161,9 +160,9 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
             <OptionGroups
               data={data}
               addOptionToBasket={(option, optionGroup) => {
-                console.log('ADD OPTION TO BASKET', option);
                 let optionAlreadySelected = false;
                 let optionsFromThisGroupSelected = 0;
+                let maximumOptionsSelected = false;
                 data?.optionsSelected?.forEach((opt: OrderOption) => {
                   if (opt.name === option.name) {
                     optionAlreadySelected = true;
@@ -174,13 +173,17 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
                     }
                   });
                 });
-                if (!optionAlreadySelected) {
-                  if (!data.optionsSelected) {
-                    data.optionsSelected = [];
-                  }
-                  data.optionsSelected.push({...option, quantity: 1})
+                if(optionGroup.amountOptionsRequired && (optionsFromThisGroupSelected >= optionGroup.amountOptionsRequired)) {
+                  maximumOptionsSelected = true;
                 }
-                return !optionAlreadySelected;
+                if (optionAlreadySelected) {
+                  data?.optionsSelected?.splice(data?.optionsSelected?.find((o: any) => o.name === option.name), 1);
+                } else {
+                  if(!maximumOptionsSelected) {
+                    data?.optionsSelected?.push({...option, quantity: 1});
+                  }
+                }
+                return !optionAlreadySelected && !maximumOptionsSelected;
               }}
             />
             <AddToBasketForm updateTotalDishAmount={updateTotalDishAmount} />

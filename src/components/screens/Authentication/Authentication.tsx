@@ -34,7 +34,7 @@ const Authentication: React.FC<AuthenticationProps> = () => {
       ]}>
       <View style={styles.appIconContainer}>
         <Image
-          source={require('../../../assets/app/app_icon.jpg')}
+          source={require('../../../assets/app/app_icon.png')}
           style={styles.appIcon}
         />
       </View>

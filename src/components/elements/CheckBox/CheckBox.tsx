@@ -18,8 +18,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({label, onPress, rightElement}) => {
   } = useTheme();
   const [checked, setChecked] = React.useState<boolean>(false);
   const _onPress = () => {
-    setChecked(!checked);
-    onPress(!checked);
+    setChecked(onPress(!checked) as any);
   };
 
   return (
