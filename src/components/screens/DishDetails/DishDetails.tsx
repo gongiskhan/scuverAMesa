@@ -30,9 +30,6 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [data, setData]: any = useState({});
 
-  const [selectedOptionGroups, setSelectedOptionGroups] = React.useState<Item[]>(
-    [],
-  );
   const [scrollY] = React.useState(new Animated.Value(0));
   const {
     colors: {background},
@@ -53,36 +50,22 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
     });
   }, []);
 
-  const addOptionGroupToBasket = React.useCallback(
-    (dish: Item) => {
-      const existedDishIndex = selectedOptionGroups.find(
-        (item: Item) => item.id === dish.id,
-      );
-      if (existedDishIndex) {
-        setSelectedOptionGroups(
-          selectedOptionGroups.filter((item: Item) => item.id !== dish.id),
-        );
-        setTotalPrice(data?.price - existedDishIndex.price);
-      } else {
-        setSelectedOptionGroups([...selectedOptionGroups, dish]);
-        setTotalPrice(totalPrice + dish.price);
-      }
-    },
-    [selectedOptionGroups, totalPrice],
-  );
-
   const updateTotalDishAmount = React.useCallback(
-    (amount: number) => {
-      const totalSelectedDishPrice = selectedOptionGroups.reduce(
-        (prevValue, currentValue) => prevValue + currentValue.price,
+    () => {
+      // console.log('data?.optionsSelected', data?.optionsSelected);
+      const totalSelectedOptionsPrice = data?.optionsSelected?.reduce(
+        (prevValue: any, currentValue: any) => prevValue + currentValue.price,
         0,
-      );
+      ) || 0;
+      // console.log('data.price', data.price);
+      // console.log('totalSelectedOptionsPrice', totalSelectedOptionsPrice);
       setTotalPrice(
-        parseFloat(data.price) * amount + totalSelectedDishPrice,
+        parseFloat(data.price) + totalSelectedOptionsPrice,
       );
     },
-    [selectedOptionGroups],
+    [data],
   );
+  useEffect(updateTotalDishAmount.bind(this), [data]);
 
   const onAddToBasketButtonPressed = () => {
 
@@ -159,7 +142,7 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
             <HeadingInformation data={data} />
             <OptionGroups
               data={data}
-              addOptionToBasket={(option, optionGroup) => {
+              addOptionToItem={(option, optionGroup) => {
                 let optionAlreadySelected = false;
                 let optionsFromThisGroupSelected = 0;
                 let maximumOptionsSelected = false;
@@ -173,16 +156,23 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
                     }
                   });
                 });
+                // console.log('optionAlreadySelected', optionAlreadySelected);
+                // console.log('optionsFromThisGroupSelected', optionsFromThisGroupSelected);
+                // console.log('optionGroup.amountOptionsRequired', optionGroup.amountOptionsRequired);
                 if(optionGroup.amountOptionsRequired && (optionsFromThisGroupSelected >= optionGroup.amountOptionsRequired)) {
                   maximumOptionsSelected = true;
                 }
+                // console.log('maximumOptionsSelected', maximumOptionsSelected);
                 if (optionAlreadySelected) {
-                  data?.optionsSelected?.splice(data?.optionsSelected?.find((o: any) => o.name === option.name), 1);
+                  data?.optionsSelected?.splice(data?.optionsSelected?.findIndex((o: any) => o.name === option.name), 1);
                 } else {
                   if(!maximumOptionsSelected) {
-                    data?.optionsSelected?.push({...option, quantity: 1});
+                    const optionPrice = optionGroup.type === 'pickable' ? 0 : option.price;
+                    data?.optionsSelected?.push({...option, price: optionPrice, quantity: 1});
                   }
                 }
+                // console.log('data?.optionsSelected', data?.optionsSelected);
+                updateTotalDishAmount();
                 return !optionAlreadySelected && !maximumOptionsSelected;
               }}
             />

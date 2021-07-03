@@ -9,18 +9,18 @@ import {OptionGroup} from "@src/models/option-group";
 
 type OptionGroupsProps = {
   data: Item;
-  addOptionToBasket: (option: Option, section: OptionGroup) => void;
+  addOptionToItem: (option: Option, section: OptionGroup) => void;
 };
 
 const OptionGroups: React.FC<OptionGroupsProps> = ({
   data: {optionGroups},
-  addOptionToBasket,
+  addOptionToItem,
 }) => {
   const {
     colors: {border},
   } = useTheme();
   const onCheckBoxPress = (selectedDish: Option, section: OptionGroup) => {
-    return addOptionToBasket(selectedDish, section);
+    return addOptionToItem(selectedDish, section);
   };
 
   return (
