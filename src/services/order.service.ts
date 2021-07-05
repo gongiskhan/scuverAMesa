@@ -10,7 +10,7 @@ import { ShopHelper } from '../utils/shop-helper';
 import {ReviewService} from './review.service';
 import {User} from '../models/user';
 
-export class OrderService {
+class OrderServiceClass {
 
   private currentOrder$ = new BehaviorSubject<Order | null>(null);
   private currentOrderSub = new Subscription();
@@ -34,6 +34,7 @@ export class OrderService {
 
   trackUserOrders() {
     this.userService.getCurrentUser().subscribe(user => {
+      console.log('USER', user);
       if (user) {
         this.user = user;
         this.firestoreService.observeRecordsByProperty('orders', 'user.uid', '==', user.uid).subscribe((orders: Order[]) => {
@@ -185,3 +186,5 @@ export class OrderService {
   }
 
 }
+
+export const OrderService = new OrderServiceClass();

@@ -41,7 +41,9 @@ class AuthServiceClass {
       const { type, user } = await GoogleSignIn.signInAsync();
       if (type === 'success') {
         const credential = firebase.auth.GoogleAuthProvider.credential(user?.auth?.idToken);
-        firebase.auth().signInWithCredential(credential).catch((error) => console.error(error));
+        firebase.auth().signInWithCredential(credential).then(authUser => {
+          console.log('authUser', authUser);
+        }).catch((error) => console.error(error));
       }
     } catch ({ message }) {
       console.error('login: Error:' + message);

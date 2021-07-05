@@ -128,7 +128,8 @@ const ShopDetails: React.FC<PlaceDetailsProps> = () => {
             <Text style={styles.sectionHeaderText}>{section.title}</Text>
           )}
           renderItem={({item}) => {
-            return <DishItem data={item} />;
+            const itemClone = JSON.parse(JSON.stringify(item));
+            return <DishItem data={itemClone} />;
           }}
           onScroll={Animated.event(
             [

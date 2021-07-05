@@ -17,7 +17,11 @@ class FirestoreServiceClass {
   }
 
   getRecordByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any) {
-    return FirebaseService.firestore.collection(collection).where(property, filterOp, value).limit(1).get();
+    return new Promise(resolve => {
+      FirebaseService.firestore.collection(collection).where(property, filterOp, value).limit(1).get().then(record => {
+        resolve(record?.docs[0]?.data());
+      });
+    });
   }
 
   // getRecordByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Promise<any> {
@@ -81,7 +85,11 @@ class FirestoreServiceClass {
 
   observeRecord(collection: string, uid: string): Observable<any> {
     return new Observable(observer => {
-      FirebaseService.firestore.collection(collection).doc(uid).onSnapshot(observer);
+      FirebaseService.firestore.collection(collection).doc(uid).onSnapshot((snap) => {
+        if (snap && snap.data()) {
+          observer.next(snap.data());
+        }
+      });
     });
   }
 
@@ -94,14 +102,15 @@ class FirestoreServiceClass {
   observeRecordByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
     return new Observable(observer => {
       const q = FirebaseService.firestore.collection(collection);
-      let query: any;
-      properties.forEach((property, i) => {
-        const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
-        if (!query) query = q.where(property, op, values[i]);
-        else query = query.where(property, op, values[i]);
-      });
-      query.limit(1).onSnapshot().subscribe((querySnap: any) => {
-        querySnap.docs.forEach((doc: any) => observer.next(doc.data()));
+      const op = Array.isArray(filterOp) ? filterOp[0] : filterOp;
+      let query: any = q.where(properties[0], op, values[0]);
+      // properties.slice(1).forEach((property, i) => {
+      //   const op = Array.isArray(filtrerOp) ? filterOp[i] : filterOp;
+      //   query = query.where(property, op, values[i]);
+      // });
+      query.onSnapshot((querySnap: any) => {
+        console.log('querySnap', querySnap?.docs[0]?.data());
+        observer.next(querySnap?.docs[0]?.data());
       });
     });
   }

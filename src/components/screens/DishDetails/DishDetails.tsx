@@ -19,6 +19,8 @@ import {Option} from "@src/models/option";
 import {DishSection} from "@src/data/mock-places";
 import OptionGroups from "@src/components/screens/DishDetails/OptionGroups";
 import {OrderOption} from "@src/models/order-option";
+import {OrderService} from "@src/services/order.service";
+import {OrderHelper} from "@src/utils/order-helper";
 const faker = require('faker');
 
 type DishDetailsProps = {
@@ -44,6 +46,7 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
       OptionGroupService.getOptionGroup(ogUID).then(og => {
         d.optionGroups.push(og);
         if (d.optionGroups.length >= d.optionGroupsId.length) {
+          d.optionsSelected = [];
           setData(d);
         }
       });
@@ -69,10 +72,13 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
 
   const onAddToBasketButtonPressed = () => {
 
-
-    console.log('ON ADD PRESSED');
-
-    goBack();
+    OrderService.getCurrentOrder().toPromise().then(order => {
+      console.log('order', order);
+      order?.orderItems.push(OrderHelper.itemToOrderItem(data, 1));
+      OrderService.updateOrder(order as any);
+      console.log('order', order);
+      goBack();
+    });
   };
 
   const coverTranslateY = scrollY.interpolate({

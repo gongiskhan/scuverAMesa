@@ -19,6 +19,7 @@ import ListRowItem from '@src/components/elements/List/ListRowItem';
 import {profile} from '@src/data/mock-profile';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
+import {AuthService} from "@src/services/auth.service";
 
 type AccountProps = {};
 
@@ -31,7 +32,9 @@ const Account: React.FC<AccountProps> = () => {
       text: 'Cancel',
       style: 'cancel',
     },
-    {text: 'OK', onPress: () => {console.log('LOG OUT HERE')}},
+    {text: 'OK', onPress: () => {
+      AuthService.signOut();
+    }},
   ];
 
   const onLogoutButtonPressed = () => {

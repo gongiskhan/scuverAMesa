@@ -7,7 +7,7 @@ import {FirestoreService} from './firestore-utils/firestore.service';
 class UserServiceClass {
 
   // @ts-ignore
-  private currentUser$ = new BehaviorSubject<User>(null);
+  private currentUser$ = new BehaviorSubject<User | n>(null);
   private currentUserSub = new Subscription();
   authService = AuthService;
   firestoreService = FirestoreService;
@@ -27,8 +27,7 @@ class UserServiceClass {
       if (!authUser) { // @ts-ignore
         return this.currentUser$.next(null);
       }
-
-      this.currentUserSub = this.observeUser(authUser.uid).subscribe(user => this.currentUser$.next(user));
+      this.currentUserSub = this.observeUserByEmail(authUser.email || '').subscribe(user => this.currentUser$.next(user));
     });
   }
 
@@ -44,12 +43,9 @@ class UserServiceClass {
     return this.observeUser(uid).pipe(take(1)).toPromise();
   }
 
-  // getUserByEmail(email: string): Promise<User> {
-  //   return this.firestoreService.observeRecordByProperty('users', 'email', '==', email).pipe(
-  //     take(1),
-  //     map((user: User) => user ? merge(new User(), user) : null)
-  //   ).toPromise();
-  // }
+  getUserByEmail(email: string): Promise<User> {
+    return this.firestoreService.getRecordByProperty('users', 'email', '==', email) as Promise<User>;
+  }
 
   // getUserByShop(shopId: string): Promise<User> {
   //   return this.firestoreService.observeRecordByProperty('users', 'shopId', '==', shopId).pipe(
@@ -83,6 +79,19 @@ class UserServiceClass {
       this.firestoreService.observeRecord('users', uid).pipe(map((user: User) => user ? {...new User(), ...user} : null)).subscribe(user => {
         // @ts-ignore
         observer.next(user);
+      });
+    });
+  }
+
+  observeUserByEmail(email: string): Observable<User | null> {
+    return new Observable(observer => {
+      this.firestoreService.observeRecordByProperties('users', ['email'], '==', [email]).subscribe(record => {
+        console.log('RECORD', record);
+        if (record) {
+          observer.next(record);
+        } else {
+          observer.next(null);
+        }
       });
     });
   }
