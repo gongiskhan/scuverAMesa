@@ -136,6 +136,7 @@ class OrderServiceClass {
   }
 
   getOrderBeingCreated(userId: string, shopId: string): Promise<Order | null> {
+    console.log('Getting order being created.');
     return this.firestoreService.observeRecordByProperties(
       'orders',
       ['user.uid', 'shop.uid', 'status'],
@@ -148,6 +149,7 @@ class OrderServiceClass {
   }
 
   observeOrderBeingCreated(userId: string, shopId: string): Observable<Order | null> {
+    console.log('Will observe order being created.');
     return this.firestoreService.observeRecordByProperties('orders', ['user.uid', 'shop.uid', 'status'], '==', [userId, shopId, 'being-created'])
     .pipe(map((order: Order) => order ? {...new Order(), ...order} : null));
   }

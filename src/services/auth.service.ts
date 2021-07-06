@@ -3,11 +3,14 @@ import { take } from 'rxjs/operators';
 import firebase from 'firebase';
 import * as GoogleSignIn from 'expo-google-sign-in';
 import {FirebaseService} from '@src/services/firebase.service';
+import {UserService} from "@src/services/user.service";
+import {User} from "@src/models/user";
 
 class AuthServiceClass {
 
-  private authUser$ = new ReplaySubject<firebase.User>(1);
+  private authUser$ = new ReplaySubject<firebase.User | null>(1);
   private authUserSub = () => {};
+  userService = UserService;
 
   constructor(
   ) {
@@ -16,14 +19,11 @@ class AuthServiceClass {
 
   private trackAuthUser() {
     this.authUserSub = FirebaseService.auth.onAuthStateChanged(authUser => {
-      // console.log('authUser', !!authUser);
-      if (authUser != null) {
-        this.authUser$.next(authUser);
-      }
+      this.authUser$.next(authUser);
     });
   }
 
-  getCurrentAuthUser(): Observable<firebase.User> {
+  getCurrentAuthUser(): Observable<firebase.User | null> {
     return this.authUser$.asObservable();
   }
 
@@ -43,6 +43,14 @@ class AuthServiceClass {
         const credential = firebase.auth.GoogleAuthProvider.credential(user?.auth?.idToken);
         firebase.auth().signInWithCredential(credential).then(authUser => {
           console.log('authUser', authUser);
+          //if (authUser.additionalUserInfo?.isNewUser) {
+            this.userService.addUser({
+              name: authUser.user?.displayName || (authUser.additionalUserInfo?.profile as any).name,
+              email: authUser.user?.email || (authUser.additionalUserInfo?.profile as any).email,
+              phoneNumber: authUser.user?.phoneNumber,
+              photoUrl: authUser.user?.photoURL || (authUser.additionalUserInfo?.profile as any).picture,
+            } as User);
+          //}
         }).catch((error) => console.error(error));
       }
     } catch ({ message }) {

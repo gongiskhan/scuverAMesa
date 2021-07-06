@@ -3,25 +3,24 @@ import {View, Image} from 'react-native';
 import {Profile} from '@src/data/mock-profile';
 import {Text} from '@src/components/elements';
 import styles from './styles';
+import {User} from "@src/models/user";
 
 type HeadingInformationProps = {
-  profile: Profile;
+  user: User | null;
 };
 
-const HeadingInformation: React.FC<HeadingInformationProps> = ({profile}) => {
+const HeadingInformation: React.FC<HeadingInformationProps> = ({user}) => {
   return (
     <View>
-      <Image
-        source={profile.coverPhoto}
-        style={styles.coverPhoto}
-        resizeMode="cover"
-      />
+      {
+        user?.photoUrl ?
+          <Image source={{uri: user?.photoUrl}} style={styles.coverPhoto} /> :
+          <Image source={require('../../../../assets/profile/avatar.png')} style={styles.coverPhoto} />
+      }
       <View style={styles.informationContainer}>
-        <Image source={profile.avatar} style={styles.avatar} />
         <Text isHeadingTitle style={styles.name}>
-          {profile.name}
+          {user?.name}
         </Text>
-        <Text style={styles.memberPoints}>73 Points | Gold Member</Text>
       </View>
     </View>
   );

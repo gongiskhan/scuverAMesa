@@ -143,7 +143,7 @@ class ShopServiceClass {
         observer.next(currentShop);
       }
       this.firestoreService.observeRecord('shops', uid).subscribe(record => {
-        const shop = record.data();
+        const shop = record;
         const currentShop = this.shops && this.shops.find(s => s.uid === uid);
         observer.next(shop ? {...new Shop(), ...currentShop, ...shop} as Shop : null);
       });

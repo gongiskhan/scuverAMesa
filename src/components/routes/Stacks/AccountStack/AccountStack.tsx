@@ -42,7 +42,7 @@ const AccountStack: React.FC<AccountStackProps> = (props) => {
       <Stack.Screen
         options={() => {
           return {
-            title: 'Edit Profile',
+            title: 'Editar Perfil',
           };
         }}
         name="EditProfileScreen"

@@ -16,6 +16,11 @@ export default StyleSheet.create({
   },
   name: {
     marginTop: 5,
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+    textShadowColor: '#000',
+    textShadowRadius: 5
   },
   memberPoints: {
     marginTop: 5,

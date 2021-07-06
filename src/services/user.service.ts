@@ -61,14 +61,14 @@ class UserServiceClass {
   // observeUsersWithWallet(): Observable<User[]> {
   //   return this.firestoreService.observeRecordsByProperty('users', 'wallet', '>', 0).pipe(map((users: User[]) => users.map(user => user ? merge(new User(), user) : null)));
   // }
-  //
-  // addUser(user: User): Promise<User> {
-  //   return this.firestoreService.addOrUpdateRecord('users', {...user}) as Promise<User>;
-  // }
-  //
-  // updateUser(user: User): Promise<User> {
-  //   return this.firestoreService.addOrUpdateRecord('users', JSON.parse(JSON.stringify(user))) as Promise<User>;
-  // }
+
+  addUser(user: User): Promise<User> {
+    return this.firestoreService.addOrUpdateRecord('users', {...user}) as Promise<User>;
+  }
+
+  updateUser(user: User): Promise<User> {
+    return this.firestoreService.addOrUpdateRecord('users', JSON.parse(JSON.stringify(user))) as Promise<User>;
+  }
 
   removeUser(uid: string) {
     return this.firestoreService.removeRecord('users', uid);
@@ -85,6 +85,7 @@ class UserServiceClass {
 
   observeUserByEmail(email: string): Observable<User | null> {
     return new Observable(observer => {
+      console.log('Observing user by email.');
       this.firestoreService.observeRecordByProperties('users', ['email'], '==', [email]).subscribe(record => {
         console.log('RECORD', record);
         if (record) {
