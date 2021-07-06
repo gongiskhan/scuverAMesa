@@ -41,6 +41,7 @@ class ShopServiceClass {
       this.location = null;
       this.updateCompleteShops();
     });
+    Geolocation.stopObserving();
     Geolocation.watchPosition((location: any) => {
       console.log('watchPosition LOCATION', location);
       this.location = location;
@@ -50,7 +51,11 @@ class ShopServiceClass {
       this.location = null;
       this.updateCompleteShops();
     }, {
-      distanceFilter: 50
+      distanceFilter: 50,
+      enableHighAccuracy: true,
+      useSignificantChanges: true,
+      maximumAge: 60000,
+      timeout: 60000
     });
   }
 
@@ -171,7 +176,7 @@ class ShopServiceClass {
   }
 
   observeShops(): Observable<Shop[]> {
-    return this.firestoreService.observeCollection('shops').pipe(map((sps) => {
+    return this.firestoreService.observeCollection('shops').pipe(map((sps: any) => {
 
       const shops: Array<Shop> = [];
 

@@ -4,14 +4,25 @@ import {useNavigation} from '@react-navigation/native';
 import {Container, Button, Text} from '@src/components/elements';
 import {formatCurrency} from '@src/utils/number-formatter';
 import styles from './styles';
+import {useEffect, useState} from "react";
+import {Order} from "@src/models/order";
+import {OrderService} from "@src/services/order.service";
+import {take} from "rxjs/operators";
 
 type BasketSummaryProps = {};
 
 const BasketSummary: React.FC<BasketSummaryProps> = () => {
 
-  const cartItems = [];
-  const totalPrice = 0;
   const navigation = useNavigation();
+  const [order, setOrder] = useState({} as Order);
+
+  useEffect(() => {
+    OrderService.getCurrentOrder().subscribe(order => {
+      if (order) {
+        setOrder(order);
+      }
+    });
+  }, []);
 
   const _onViewBasketButtonPressed = () => {
     navigation.navigate('CheckoutScreen');
@@ -19,21 +30,21 @@ const BasketSummary: React.FC<BasketSummaryProps> = () => {
 
   return (
     <>
-      {cartItems.length > 0 && (
+      {order?.orderItems?.length > 0 && (
         <Container style={styles.viewBasketButtonContainer}>
           <Button
             childrenContainerStyle={styles.viewBasketButton}
             onPress={_onViewBasketButtonPressed}>
             <View style={styles.viewBasketButtonTextContainer}>
               <Text isBold style={styles.viewBasketButtonText}>
-                Mais
+                Ver Mais
               </Text>
-              <Text style={styles.cardItemText}>{`${cartItems.length} ${
-                cartItems.length > 1 ? 'items' : 'item'
+              <Text style={styles.cardItemText}>{`${order.orderItems.length} ${
+                order.orderItems.length > 1 ? 'artigos' : 'artigo'
               }`}</Text>
             </View>
             <Text style={styles.totalPriceText} isBold>
-              {formatCurrency(totalPrice)}
+              {formatCurrency(order.total)}
             </Text>
           </Button>
         </Container>
