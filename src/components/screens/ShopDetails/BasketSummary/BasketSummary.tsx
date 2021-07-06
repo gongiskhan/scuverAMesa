@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Container, Button, Text} from '@src/components/elements';
+import {Container, Button, Text, Icon} from '@src/components/elements';
 import {formatCurrency} from '@src/utils/number-formatter';
 import styles from './styles';
 import {useEffect, useState} from "react";
@@ -15,7 +15,6 @@ const BasketSummary: React.FC<BasketSummaryProps> = () => {
 
   const navigation = useNavigation();
   const [order, setOrder] = useState({} as Order);
-
   useEffect(() => {
     OrderService.getCurrentOrder().subscribe(order => {
       if (order) {
@@ -36,9 +35,10 @@ const BasketSummary: React.FC<BasketSummaryProps> = () => {
             childrenContainerStyle={styles.viewBasketButton}
             onPress={_onViewBasketButtonPressed}>
             <View style={styles.viewBasketButtonTextContainer}>
-              <Text isBold style={styles.viewBasketButtonText}>
-                Ver Mais
-              </Text>
+              <Icon name="basket" size={22} useIonicons style={{color: 'white'}} />
+              {/*<Text isBold style={styles.viewBasketButtonText}>*/}
+              {/*  Carrinho:*/}
+              {/*</Text>*/}
               <Text style={styles.cardItemText}>{`${order.orderItems.length} ${
                 order.orderItems.length > 1 ? 'artigos' : 'artigo'
               }`}</Text>
@@ -46,6 +46,7 @@ const BasketSummary: React.FC<BasketSummaryProps> = () => {
             <Text style={styles.totalPriceText} isBold>
               {formatCurrency(order.total)}
             </Text>
+            <Icon name="chevron-forward" size={22} useIonicons style={{color: 'white'}} />
           </Button>
         </Container>
       )}

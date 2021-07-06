@@ -23,9 +23,11 @@ export default StyleSheet.create({
   },
   cardItemText: {
     color: 'white',
+    marginLeft: 10
   },
   totalPriceText: {
     fontSize: 16,
     color: 'white',
+    marginLeft: 150
   },
 });

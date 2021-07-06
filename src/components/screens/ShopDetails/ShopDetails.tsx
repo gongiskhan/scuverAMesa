@@ -12,6 +12,9 @@ import {ShopService} from "@src/services/shop.service";
 import {CategoryService} from "@src/services/category.service";
 import {SubSink} from "@src/utils/subsink";
 import {Category} from "@src/models/category";
+import {OrderService} from "@src/services/order.service";
+import {take} from "rxjs/operators";
+import {OrderHelper} from "@src/utils/order-helper";
 
 type PlaceDetailsProps = {};
 
@@ -29,7 +32,7 @@ const ShopDetails: React.FC<PlaceDetailsProps> = () => {
 
   React.useEffect(() => {
     subs.unsubscribe();
-    subs.add(ShopService.getCurrentShop().subscribe((s: Shop) => {
+    subs.add(ShopService.getCurrentShop().subscribe(async (s: Shop) => {
       if ((s && !shop) || (s && s.uid !== shop.uid)) {
         // console.log('CHANGE SHOP', s);
         setShop(s);
@@ -43,10 +46,9 @@ const ShopDetails: React.FC<PlaceDetailsProps> = () => {
             }) as any);
           }
         }));
-        // OrderHelper.buildNewOrder().then(o => {
-        //   console.log('O', o);
-        //   OrderService.addOrder(o);
-        // });
+        let order = await OrderService.getCurrentOrder().pipe(take(1)).toPromise();
+        if (order && order.shop.uid !== s.uid) order = await OrderHelper.buildNewOrder();
+        await OrderService.setCurrentOrder(order);
       }
     }));
   }, []);

@@ -5,6 +5,8 @@ import {StackActions} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {Container, Text, Button, Dialog} from '@src/components/elements';
 import styles from './styles';
+import {OrderService} from "@src/services/order.service";
+import {OrderHelper} from "@src/utils/order-helper";
 
 type OrderSuccessModalProps = {
   isVisible: boolean;
@@ -42,15 +44,11 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
   };
 
   const _onOrderSomethingElseButtonPressed = () => {
-    console.log('CLEAR CART HERE');
+    OrderHelper.buildNewOrder().then((o: any) => {
+      OrderService.setCurrentOrder(o);
+    });
     setIsVisble(false);
     navigation.navigate('HomeScreen');
-  };
-
-  const _onTrackOrderButtonPressed = () => {
-    console.log('CLEAR CART HERE');
-    setIsVisble(false);
-    navigation.dispatch(StackActions.replace('TrackOrderScreen'));
   };
 
   return (
@@ -67,32 +65,27 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
           {!isAnimationFinished && (
             <Animated.View
               style={[styles.processingOrderContainer, {opacity: fadeOut}]}>
-              <Text isBold>Processing Your Order...</Text>
+              <Text isBold>A sua encomenda está a ser processada...</Text>
             </Animated.View>
           )}
           <Animated.View
             style={[styles.successMessageContainer, {opacity: fadeIn}]}>
             <Text isHeadingTitle isBold isPrimary>
-              Thank you for your order.
+              Obrigado por utilizar o Scuver!
             </Text>
             <Text isCenter style={styles.successMessage}>
-              You can track the delivery in the "Orders" section.
+              Pode encontrar mais tarde a sua encomenda no histórico.
             </Text>
           </Animated.View>
         </View>
         <Animated.View
           style={[styles.footerButtonContainer, {opacity: fadeIn}]}>
-          <Button isFullWidth onPress={_onTrackOrderButtonPressed}>
-            <Text isWhite isBold>
-              Track My Order
-            </Text>
-          </Button>
           <Button
             isFullWidth
             isTransparent
             style={styles.orderSomethingButton}
             onPress={_onOrderSomethingElseButtonPressed}>
-            <Text>Order Something Else</Text>
+            <Text>Fazer outro Pedido</Text>
           </Button>
         </Animated.View>
       </Container>
