@@ -29,7 +29,7 @@ const RootNavigation = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    AuthService.getCurrentAuthUser().subscribe(u => {
+    AuthService.getCurrentAuthUser().subscribe((u: any) => {
       // console.log('current auth user', !!u);
       setUser(u as any);
     });

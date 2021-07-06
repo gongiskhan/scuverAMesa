@@ -61,17 +61,28 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
       <Stack.Screen
         options={() => {
           return {
-            headerTitle: _renderExploreHeaderTitle,
-            title: 'Restaurantes',
-            headerTitleAlign: 'left',
-            headerRight: _renderExploreHeaderRight,
-            headerRightContainerStyle: styles.headerRightContainer,
+            headerShown: false,
+            // headerTitle: _renderExploreHeaderTitle,
+            title: 'Restaurantes Scuver',
+            // headerTitleAlign: 'left',
+            // headerRight: _renderExploreHeaderRight,
+            // headerRightContainerStyle: styles.headerRightContainer,
           };
         }}
         name="HomeScreen"
         component={Home}
       />
       <Stack.Screen
+        options={() => {
+          return {
+            headerShown: true,
+            // headerTitle: _renderExploreHeaderTitle,
+            title: '',
+            // headerTitleAlign: 'left',
+            // headerRight: _renderExploreHeaderRight,
+            // headerRightContainerStyle: styles.headerRightContainer,
+          };
+        }}
         name="ShopDetailsScreen"
         component={ShopDetails}
       />

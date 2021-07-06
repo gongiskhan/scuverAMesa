@@ -1,15 +1,11 @@
 import * as React from 'react';
 import {useFocusEffect, useScrollToTop} from '@react-navigation/native';
-import {ScrollView, SafeAreaView, InteractionManager} from 'react-native';
-import {SearchBar, LoadingIndicator} from '@src/components/elements';
-import PopularPlaces from './PopularPlaces';
-import RecommendedPlaces from './RecommendedPlaces';
-import MerchantCampaigns from './MerchantCampaigns';
-import PopularCategories from './PopularCategories';
-import HotDeals from './HotDeals';
+import {InteractionManager, RefreshControl, SafeAreaView, ScrollView} from 'react-native';
+import {Button, Icon, LoadingIndicator, SearchBar} from '@src/components/elements';
 import Shops from './Shops';
-import AppReviewModal from '@src/components/common/AppReviewModal';
 import styles from "./styles";
+import PopularCategories from "@src/components/screens/Home/PopularCategories";
+import {ShopService} from "@src/services/shop.service";
 
 type HomeProps = {};
 
@@ -29,11 +25,38 @@ const Home: React.FC<HomeProps> = () => {
     }, []),
   );
 
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    ShopService.updatePosition();
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
   return (
     <SafeAreaView style={styles.root}>
-      <ScrollView style={styles.scrollView} ref={scrollViewRef} stickyHeaderIndices={[0]}>
+      <ScrollView
+        style={styles.scrollView}
+        ref={scrollViewRef}
+        stickyHeaderIndices={[0]}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         {/*<SearchBar placeholder="Pesquise restaurantes ou pratos" />*/}
-        {/*<PopularCategories />*/}
+        <Button style={styles.root}
+                isTransparent
+                isFullWidth
+          onPress={() => onRefresh()}>
+          <Icon name="md-refresh" size={22} isPrimary useIonicons />
+        </Button>
         {isNavigationTransitionFinished ? (
           <>
             {/*<PopularPlaces />*/}
@@ -46,7 +69,7 @@ const Home: React.FC<HomeProps> = () => {
           <LoadingIndicator size="large" hasMargin />
         )}
       </ScrollView>
-      <AppReviewModal daysBeforeReminding={1} />
+      {/*<AppReviewModal daysBeforeReminding={1} />*/}
     </SafeAreaView>
   );
 };

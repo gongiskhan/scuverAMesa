@@ -20,6 +20,7 @@ class ShopServiceClass {
 
   // @ts-ignore
   private currentShop$ = new BehaviorSubject<Shop | null>(null);
+  private completeShops$ = new BehaviorSubject<Array<Shop | null>>(null);
   private currentShopSub = new Subscription();
   shops: Array<Shop> = [];
   foodTypes: Array<FoodType> = [];
@@ -27,29 +28,48 @@ class ShopServiceClass {
 
   constructor(
   ) {
+    this.updatePosition();
+  }
+
+  updatePosition() {
     Geolocation.getCurrentPosition((location: any) => {
-      console.log('LOCATION', location);
+      console.log('getCurrentPosition LOCATION', location);
       this.location = location;
+      this.updateCompleteShops();
     }, (error: any) => {
-      console.log('LOCATION ERROR', error);
+      console.log('getCurrentPosition LOCATION ERROR', error);
       this.location = null;
+      this.updateCompleteShops();
+    });
+    Geolocation.watchPosition((location: any) => {
+      console.log('watchPosition LOCATION', location);
+      this.location = location;
+      this.updateCompleteShops();
+    }, (error: any) => {
+      console.log('watchPosition LOCATION ERROR', error);
+      this.location = null;
+      this.updateCompleteShops();
+    }, {
+      distanceFilter: 50
+    });
+  }
+
+  updateCompleteShops() {
+    this.getShops().then(async shops => {
+      this.shops = shops;
+      if (this.location) {
+        this.calculateShopDistances();
+        // this.calculateShopDeliveryFees();
+      }
+      this.setShopTodaySchedules();
+      this.setRatings();
+      await this.setFoodTypes();
+      this.completeShops$.next(this.shops || []);
     });
   }
 
   observeCompleteShops() {
-    return new Observable(observer => {
-      this.observeShops().subscribe(async shops => {
-        this.shops = shops;
-        if (this.location) {
-          this.calculateShopDistances();
-          // this.calculateShopDeliveryFees();
-        }
-        this.setShopTodaySchedules();
-        this.setRatings();
-        await this.setFoodTypes();
-        observer.next(this.shops);
-      });
-    });
+    return this.completeShops$.asObservable();
   }
 
   calculateShopDistances() {

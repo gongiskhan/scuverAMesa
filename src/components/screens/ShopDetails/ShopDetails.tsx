@@ -3,20 +3,15 @@ import {Animated, SafeAreaView, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {Container, Text} from '@src/components/elements';
 import HeadingInformation from './HeadingInformation';
-import PopularDishes from './PopularDishes';
 import TabSectionList from '@src/components/elements/TabSectionList';
 import DishItem from '@src/components/common/DishItem';
-import {mockPlaceDetails} from '@src/data/mock-places';
 import styles from './styles';
 import BasketSummary from './BasketSummary';
 import {Shop} from "@src/models/shop";
 import {ShopService} from "@src/services/shop.service";
 import {CategoryService} from "@src/services/category.service";
 import {SubSink} from "@src/utils/subsink";
-import {OrderService} from "@src/services/order.service";
-import {Order} from "@src/models/order";
-import {UserService} from "@src/services/user.service";
-import {OrderHelper} from "@src/utils/order-helper";
+import {Category} from "@src/models/category";
 
 type PlaceDetailsProps = {};
 
@@ -34,11 +29,11 @@ const ShopDetails: React.FC<PlaceDetailsProps> = () => {
 
   React.useEffect(() => {
     subs.unsubscribe();
-    subs.add(ShopService.getCurrentShop().subscribe(s => {
+    subs.add(ShopService.getCurrentShop().subscribe((s: Shop) => {
       if ((s && !shop) || (s && s.uid !== shop.uid)) {
         // console.log('CHANGE SHOP', s);
         setShop(s);
-        subs.add(CategoryService.observeCategoriesByShop(s.uid).subscribe(categories => {
+        subs.add(CategoryService.observeCategoriesByShop(s.uid).subscribe((categories: Array<Category>) => {
           if (categories) {
             setCategories(categories.map(c => {
               c.items = c.items.map(item => {

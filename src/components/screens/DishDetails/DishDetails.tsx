@@ -14,6 +14,7 @@ import {OrderOption} from "@src/models/order-option";
 import {OrderService} from "@src/services/order.service";
 import {OrderHelper} from "@src/utils/order-helper";
 import {take} from "rxjs/operators";
+import BasketSummary from "@src/components/screens/ShopDetails/BasketSummary";
 
 type DishDetailsProps = {
   route: Route<any>
@@ -207,6 +208,7 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
           <Text style={styles.headerTitle}>{data.name}</Text>
         </Animated.View>
       </View>
+      <BasketSummary />
     </SafeAreaView>
   );
 };
