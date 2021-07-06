@@ -49,6 +49,7 @@
     "react-native-unimodules": "~0.13.3",
     "react-native-vector-icons": "^8.0.0",
     "react-native-web": "~0.13.12",
+    "rxjs": "^7.2.0",
     "simple-markdown": "^0.7.3"
   },
   "devDependencies": {

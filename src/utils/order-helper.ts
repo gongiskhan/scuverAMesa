@@ -6,8 +6,8 @@ import {OrderOption} from '../models/order-option';
 import {ShopService} from '../services/shop.service';
 import {UserService} from '../services/user.service';
 import {ShopHelper} from './shop-helper';
-import {MyMoment} from './time-helper';
 import {UIDGenerator} from './uid-generator';
+import {MyMoment} from "@src/utils/time-helper";
 
 
 class OrderHelperClass {
@@ -20,9 +20,9 @@ class OrderHelperClass {
   ) {}
 
   async buildNewOrder() {
-    const user = await this.userService.getCurrentUser().pipe(take(1)).toPromise();
+    const user = await this.userService.observeCurrentUser().pipe(take(1)).toPromise();
     const shop = await this.shopService.getCurrentShop().pipe(take(1)).toPromise();
-    if (!user || !shop) return;
+    if (!user || !shop) console.error('No shop or no user!');
 
     const order = new Order();
     order.uid = UIDGenerator.generate();
@@ -31,9 +31,10 @@ class OrderHelperClass {
     order.shop = JSON.parse(JSON.stringify(shop));
     order.user = JSON.parse(JSON.stringify(user));
     order.orderItems = [];
-    order.address = user.addresses[user.addresses.length - 1];
     order.submittedAt = '';
     order.completedAt = '';
+    console.log('MyMoment.getCurrentMoment().toString()', MyMoment.getCurrentMoment().toString());
+    order.arrivalExpectedAt = MyMoment.getCurrentMoment().toString();
     // order.easypayPayment = {} as EasypayPayment;
 
     return order;
@@ -66,11 +67,7 @@ class OrderHelperClass {
   }
 
   getOrderTotal(order: Order) {
-    if (order.type === 'delivery') {
-      return this.getOrderSubTotal(order) + order.deliveryFee;
-    } else {
       return this.getOrderSubTotal(order);
-    }
   }
 
   getOrderItemTotal(orderItem: OrderItem) {
@@ -83,35 +80,6 @@ class OrderHelperClass {
     total *= orderItem.quantity;
 
     return total;
-  }
-
-  updateOrderExpectedArrivalIfNeeded(order: Order) {
-    const expectedArrivalMoment = order.arrivalExpectedAt ? MyMoment.parse(order.arrivalExpectedAt) : null;
-    const earliestArrivalTimeOfToday   = this.shopHelper.getArrivalTimesOfToday(order.shop)[0];
-    const earliestArrivalMomentOfToday = earliestArrivalTimeOfToday ? MyMoment.todayAt(earliestArrivalTimeOfToday) : null;
-
-    if (!expectedArrivalMoment && !earliestArrivalMomentOfToday) return false;
-
-    if ( expectedArrivalMoment && !earliestArrivalMomentOfToday) {
-      order.arrivalExpectedAt = new Order().arrivalExpectedAt;
-      return true;
-    }
-
-    if (!expectedArrivalMoment &&  earliestArrivalMomentOfToday) {
-      order.arrivalExpectedAt = earliestArrivalMomentOfToday.toString();
-      return true;
-    }
-
-    // ⬇ both have a value...
-
-    // @ts-ignore
-    if (expectedArrivalMoment.toMinutes() < earliestArrivalMomentOfToday.toMinutes()) {
-      // @ts-ignore
-      order.arrivalExpectedAt = earliestArrivalMomentOfToday.toString();
-      return true;
-    }
-
-    return false;
   }
 
   areEquals(option: Option, orderOption: OrderOption) {

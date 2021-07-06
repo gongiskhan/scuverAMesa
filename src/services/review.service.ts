@@ -17,7 +17,7 @@ class ReviewServiceClass {
   }
 
   trackUserReviews() {
-    this.userService.getCurrentUser().subscribe(user => {
+    this.userService.observeCurrentUser().subscribe(user => {
       if (user) {
         this.firestoreService.observeRecordsByProperty('reviews', 'user.uid', '==', user.uid).subscribe((reviews: Review[]) => {
           // @ts-ignore

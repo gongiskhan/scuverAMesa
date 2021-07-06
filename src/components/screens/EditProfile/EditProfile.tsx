@@ -13,7 +13,7 @@ const EditProfile: React.FC<EditProfileProps> = () => {
 
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    UserService.getCurrentUser().subscribe(u => setUser(u));
+    UserService.observeCurrentUser().subscribe(u => setUser(u));
   });
 
   return (

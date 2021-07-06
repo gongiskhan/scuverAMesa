@@ -1,27 +1,19 @@
 import * as React from 'react';
-import {
-  Animated,
-  SafeAreaView,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import {useTheme, useNavigation, Route} from '@react-navigation/native';
-import {Text, Button} from '@src/components/elements';
+import {useEffect, useState} from 'react';
+import {Animated, KeyboardAvoidingView, Platform, SafeAreaView, View,} from 'react-native';
+import {Route, useNavigation, useTheme} from '@react-navigation/native';
+import {Button, Text} from '@src/components/elements';
 import HeadingInformation from './HeadingInformation';
 import AddToBasketForm from './AddToBasketForm';
 import {formatCurrency} from '@src/utils/number-formatter';
 import styles from './styles';
-import {useEffect, useState} from "react";
 import {Item} from "@src/models/item";
 import {OptionGroupService} from "@src/services/option-group.service";
-import {Option} from "@src/models/option";
-import {DishSection} from "@src/data/mock-places";
 import OptionGroups from "@src/components/screens/DishDetails/OptionGroups";
 import {OrderOption} from "@src/models/order-option";
 import {OrderService} from "@src/services/order.service";
 import {OrderHelper} from "@src/utils/order-helper";
-const faker = require('faker');
+import {take} from "rxjs/operators";
 
 type DishDetailsProps = {
   route: Route<any>
@@ -70,15 +62,25 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
   );
   useEffect(updateTotalDishAmount.bind(this), [data]);
 
-  const onAddToBasketButtonPressed = () => {
+  const onAddToBasketButtonPressed = async () => {
 
-    OrderService.getCurrentOrder().toPromise().then(order => {
-      console.log('order', order);
-      order?.orderItems.push(OrderHelper.itemToOrderItem(data, 1));
-      OrderService.updateOrder(order as any);
-      console.log('order', order);
-      goBack();
-    });
+    let order = await OrderService.getCurrentOrder().pipe(take(1)).toPromise();
+    if (!order) order = await OrderHelper.buildNewOrder();
+
+    const orderItem = OrderHelper.itemToOrderItem(data, 1);
+    order.orderItems.push(orderItem);
+
+    await OrderService.setCurrentOrder(order);
+
+    goBack();
+
+    // OrderService.getCurrentOrder().toPromise().then(order => {
+    //   console.log('order', order);
+    //   order?.orderItems.push(OrderHelper.itemToOrderItem(data, 1));
+    //   OrderService.updateOrder(order as any);
+    //   console.log('order', order);
+    //   goBack();
+    // });
   };
 
   const coverTranslateY = scrollY.interpolate({

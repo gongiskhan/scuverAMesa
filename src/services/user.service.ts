@@ -31,8 +31,14 @@ class UserServiceClass {
     });
   }
 
-  getCurrentUser(): Observable<User> {
+  observeCurrentUser(): Observable<User> {
     return this.currentUser$.asObservable();
+  }
+
+  getCurrentUser(): Promise<User | null> {
+    return new Promise(resolve => {
+      resolve(this.currentUser$.value || null);
+    });
   }
 
   // --------------------------------------------------------------------------------------------------------

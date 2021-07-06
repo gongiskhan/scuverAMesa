@@ -1,12 +1,12 @@
-import {BehaviorSubject, Subscription, combineLatest, Observable} from 'rxjs';
-import { pairwise, filter, map, take } from 'rxjs/operators';
-import { Order } from '../models/order';
-import { OrderHelper } from '../utils/order-helper';
-import { FirestoreService } from './firestore-utils/firestore.service';
-import { ShopService } from './shop.service';
-import { UserService } from './user.service';
-import { LocationHelper } from '../utils/location-helper';
-import { ShopHelper } from '../utils/shop-helper';
+import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import {filter, map, pairwise, take} from 'rxjs/operators';
+import {Order} from '../models/order';
+import {OrderHelper} from '../utils/order-helper';
+import {FirestoreService} from './firestore-utils/firestore.service';
+import {ShopService} from './shop.service';
+import {UserService} from './user.service';
+import {LocationHelper} from '../utils/location-helper';
+import {ShopHelper} from '../utils/shop-helper';
 import {ReviewService} from './review.service';
 import {User} from '../models/user';
 
@@ -33,7 +33,7 @@ class OrderServiceClass {
   }
 
   trackUserOrders() {
-    this.userService.getCurrentUser().subscribe(user => {
+    this.userService.observeCurrentUser().subscribe(user => {
       console.log('USER', user);
       if (user) {
         this.user = user;
@@ -51,7 +51,7 @@ class OrderServiceClass {
   // --------------------------------------------------------------------------------------------------------
 
   private trackCurrentOrder() {
-    combineLatest([this.userService.getCurrentUser(), this.shopService.getCurrentShop()]).subscribe(async ([user, shop]) => {
+    combineLatest([this.userService.observeCurrentUser(), this.shopService.getCurrentShop()]).subscribe(async ([user, shop]) => {
       this.currentOrderSub.unsubscribe();
       if (!user || !shop) return this.currentOrder$.next(null);
 
@@ -69,7 +69,6 @@ class OrderServiceClass {
       // keeps going down only when order.address has changed...
       filter(([prevOrder, currOrder]) => {
         if (!currOrder) return false;
-        if (!currOrder.address) return false;
 
         if (!prevOrder && currOrder) return true;
 
@@ -78,7 +77,6 @@ class OrderServiceClass {
     )
     .subscribe(async ([, order]) => {
       order.distanceInKm = 0;
-      order.deliveryFee = 0;
       return await this.setCurrentOrder(order);
     });
   }
@@ -90,6 +88,8 @@ class OrderServiceClass {
     if (order.wallet) {
       order.total -= order.wallet;
     }
+
+    console.log('SETTING CURRENT ORDER', order);
 
     await this.updateOrder(order);
     await this.removeOrdersBeingCreatedByUserExcept(order);

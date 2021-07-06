@@ -13,7 +13,7 @@ const ContactInformationForm: React.FC = () => {
   const [userCopy, setUserCopy] = useState<User | null>(null);
 
   useEffect(() => {
-    UserService.getCurrentUser().subscribe(u => {
+    UserService.observeCurrentUser().subscribe(u => {
       console.log('u', u);
       setUser(u);
       setUserCopy(u);

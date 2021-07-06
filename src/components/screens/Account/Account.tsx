@@ -32,7 +32,7 @@ const Account: React.FC<AccountProps> = () => {
 
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    UserService.getCurrentUser().subscribe(u => setUser(u));
+    UserService.observeCurrentUser().subscribe(u => setUser(u));
   });
 
   const alertButtons: AlertButton[] = [

@@ -57,7 +57,7 @@ class FirestoreServiceClass {
         if (!query) query = FirebaseService.firestore.collection(collection).where(property, op, values[i]);
         else query = query.where(property, op, values[i]);
       });
-      query.onSnapshot().toPromise().then((querySnap: any) => {
+      query.onSnapshot((querySnap: any) => {
         const results: any = [];
         querySnap.docs.forEach((doc: any) => results.push(doc.data()));
         resolve(results);
@@ -109,7 +109,6 @@ class FirestoreServiceClass {
       //   query = query.where(property, op, values[i]);
       // });
       query.onSnapshot((querySnap: any) => {
-        console.log('querySnap', querySnap?.docs[0]?.data());
         observer.next(querySnap?.docs[0]?.data());
       });
     });
