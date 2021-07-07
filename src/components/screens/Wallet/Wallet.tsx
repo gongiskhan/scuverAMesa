@@ -1,6 +1,6 @@
-import {Card, Text} from '@src/components/elements';
+import {Button, Card, Icon, Text} from '@src/components/elements';
 import * as React from 'react';
-import {I18nManager} from 'react-native';
+import {I18nManager, Image} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
 import {useEffect, useState} from "react";
@@ -33,6 +33,13 @@ const Wallet: React.FC = () => {
         <Text style={{textAlign: 'justify', margin: 10, marginTop: 20}}>
           Carregue a sua carteira para efetuar pedidos no Scuver, seja no estabelecimento ou na aplicação de entregas.
         </Text>
+        <Button
+          isFullWidth={true}
+          style={{flex: 1, flexDirection: 'row'}}
+        >
+          <Image source={require('../../../assets/app/mbway-logo.png')} style={{}}/>
+          <Text style={{textAlignVertical: 'center'}}>MBWAY</Text>
+        </Button>
         <Text>
           Cartão de Crédito
         </Text>
