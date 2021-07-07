@@ -43,7 +43,7 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({totalPrice, shippingFee}) => {
         `Submeter pedido? O valor de €${totalPrice} será deduzido da sua Carteira Scuver`,
         [
           {
-            text: "Cancel",
+            text: "Cancelar",
             onPress: () => console.log("Cancel Pressed"),
             style: "cancel"
           },
@@ -59,6 +59,27 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({totalPrice, shippingFee}) => {
         ]
       );
     } else {
+      Alert.alert(
+        "Confirmação",
+        `Submeter pedido? O valor de €${totalPrice} será deduzido da sua Carteira Scuver`,
+        [
+          {
+            text: "Cancelar",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Submeter Pedido",
+            onPress: () => {
+              // @ts-ignore
+              UserService.updateUser({...user, wallet: user.wallet - totalPrice} as User);
+              OrderService.updateOrder({...order, submittedAt: MyMoment.getCurrentMoment().toString(), status: 'pending'});
+              setIsSuccessOrderModalVisible(true);
+              navigation.navigate('HomeScreen');
+            }
+          }
+        ]
+      );
       Alert.alert('Carregamento', 'Por favor carregue a sua Carteira Scuver para efetuar este pedido.');
     }
   };
