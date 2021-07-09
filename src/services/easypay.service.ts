@@ -32,7 +32,7 @@ export class EasypayServiceClass {
   createEasypayPayment(user: User | null, orderId: string, amount: number, method: 'mb'|'mbw') {
     const url  = `https://europe-west1-scuver-data.cloudfunctions.net/CreatePayment`;
     const body = this.buildRequestBody(user, orderId, amount, method);
-    return fetch(url, {body: JSON.stringify(body)});
+    return fetch(url, {method: 'POST', body: JSON.stringify(body)});
   }
 
   deleteEasypayPayment(easypayPaymentId: string) {
@@ -84,7 +84,8 @@ export class EasypayServiceClass {
         },
         orderId,
         amount,
-        method
+        method,
+        addToWallet: true
       };
     }
   }
