@@ -18,6 +18,5 @@ target 'ScuverMesa' do
   #     flipper_post_install(installer)
   #   end
   # end
-  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
 end

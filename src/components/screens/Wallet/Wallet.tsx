@@ -48,6 +48,31 @@ const Wallet: React.FC = () => {
           marginTop: 50
         }}>Carteira: {formatCurrency(user?.wallet || 0)}</Text>
       </Container>
+      {/*<Card style={{*/}
+      {/*  width: 500,*/}
+      {/*  height: 500,*/}
+      {/*  justifyContent: 'space-between',*/}
+      {/*}}>*/}
+      {/*  <Text>JBLSKJBLSKJSBLJKSBSJBSLJSHB</Text>*/}
+      {/*  <View style={{*/}
+      {/*    width: 100,*/}
+      {/*    height: 100,*/}
+      {/*  }}>*/}
+      {/*    <Text>TEXT</Text>*/}
+      {/*  </View>*/}
+      {/*  <View style={{*/}
+      {/*    width: 100,*/}
+      {/*    height: 100,*/}
+      {/*  }}>*/}
+      {/*    <Text>TEXT</Text>*/}
+      {/*  </View>*/}
+      {/*  <View style={{*/}
+      {/*    width: 100,*/}
+      {/*    height: 100,*/}
+      {/*  }}>*/}
+      {/*    <Text>TEXT</Text>*/}
+      {/*  </View>*/}
+      {/*</Card>*/}
       <Card title="Carregar a Carteira">
         <Text style={{textAlign: 'justify', margin: 10, marginTop: 20}}>
           Carregue a sua carteira para efetuar pedidos no Scuver, seja no estabelecimento ou na aplicação de entregas.
@@ -65,23 +90,30 @@ const Wallet: React.FC = () => {
           keyboardType="numeric"
         />
       </Card>
-      <Card style={{justifyContent: 'center', alignItems: 'center'}}>
-        <Image source={require('../../../assets/app/mbwayeref.png')} style={{ marginBottom: 20, marginLeft: 62}} height={100} width={200}/>
-        <Button
-          onPress={chargeMBREF}
-          style={{flex: 0, flexDirection: 'row'}}
-        >
-          <Text style={{textAlignVertical: 'center', color: '#fff'}}>Usar MBWAY</Text>
-        </Button>
-        <Button
-          onPress={chargeMBWAY}
-          style={{flex: 0, flexDirection: 'row'}}
-        >
-          <Text style={{textAlignVertical: 'center', color: '#fff'}}>Usar MBWAY</Text>
-        </Button>
-        <Text>
-          Sabe que pode utilizar o seu cartão de refeição com o MBWAY? <Link target={'_blank'} to={'//www.mbway.pt/cartoes-refeicao'}>https://www.mbway.pt/cartoes-refeicao</Link>
-        </Text>
+      <Card style={{height: 250}}>
+        <Container style={{height: '100%', flexWrap: 'wrap', alignItems: 'baseline', flexDirection: 'column', justifyContent: 'space-between'}}>
+          <View style={{flex: 5, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
+            <Image source={require('../../../assets/app/mbway.png')} style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
+            <Image source={require('../../../assets/app/mbref.png')} style={{flex: 1, resizeMode: 'contain',  flexShrink: 1, width: 100, height: 100}}/>
+          </View>
+          <View style={{width: '100%', flex: 3, flexGrow: 2, flexDirection: 'row', justifyContent: 'space-around', alignSelf: 'flex-end'}}>
+            <Button
+              onPress={chargeMBWAY}
+            >
+              <Text style={{color: '#fff', fontSize: 18}}>Usar MBWAY</Text>
+            </Button>
+            <Button
+              onPress={chargeMBREF}
+            >
+              <Text style={{color: '#fff', fontSize: 18}}>Usar Ref. MB</Text>
+            </Button>
+          </View>
+          <View style={{width: '100%', marginTop: 40,flex: 2, flexDirection: 'column', alignItems: 'flex-end'}}>
+            <Text style={{alignSelf: 'flex-end'}}>
+              Sabe que pode utilizar o seu cartão de refeição com o MBWAY? <Link target={'_blank'} to={'//www.mbway.pt/cartoes-refeicao'}>https://www.mbway.pt/cartoes-refeicao</Link>
+            </Text>
+          </View>
+        </Container>
       </Card>
       <Card>
         <Text>
