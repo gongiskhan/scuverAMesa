@@ -1,6 +1,6 @@
 import {Button, Card, Container, Icon, Text, TextField} from '@src/components/elements';
 import * as React from 'react';
-import {I18nManager, Image, View} from 'react-native';
+import {I18nManager, Image, Linking, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
 import {useEffect, useState} from "react";
@@ -12,6 +12,7 @@ import {EasypayService} from "@src/services/easypay.service";
 import {UIDGenerator} from "@src/utils/uid-generator";
 import useThemeColors from "@src/custom-hooks/useThemeColors";
 import {Link} from "@react-navigation/native";
+import PropTypes from "prop-types";
 
 const Wallet: React.FC = () => {
 
@@ -33,6 +34,10 @@ const Wallet: React.FC = () => {
     EasypayService.createEasypayPayment(user, UIDGenerator.generate(), Number(amount), 'mb').then(r => {
       console.log('R', r);
     });
+  }
+
+  const openLink = (link) => {
+    Linking.openURL(link);
   }
 
   return (
@@ -108,9 +113,12 @@ const Wallet: React.FC = () => {
               <Text style={{color: '#fff', fontSize: 18}}>Usar Ref. MB</Text>
             </Button>
           </View>
-          <View style={{width: '100%', marginTop: 40,flex: 2, flexDirection: 'column', alignItems: 'flex-end'}}>
+          <View style={{width: '100%', marginTop: 40,flex: 2, flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text style={{alignSelf: 'flex-end'}}>
-              Sabe que pode utilizar o seu cartão de refeição com o MBWAY? <Link target={'_blank'} to={'//www.mbway.pt/cartoes-refeicao'}>https://www.mbway.pt/cartoes-refeicao</Link>
+              Sabe que pode utilizar o seu cartão de refeição com o MBWAY?
+              <Text onPress={ ()=>{ Linking.openURL('https://www.mbway.pt/cartoes-refeicao') }}>
+                <Text style={{alignSelf: 'flex-end'}} isPrimary> https://www.mbway.pt/cartoes-refeicao</Text>
+              </Text>
             </Text>
           </View>
         </Container>
