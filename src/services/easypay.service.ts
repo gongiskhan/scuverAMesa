@@ -31,13 +31,18 @@ export class EasypayServiceClass {
 
   createEasypayPayment(user: User | null, orderId: string, amount: number, method: 'mb'|'mbw') {
     const url  = `https://europe-west1-scuver-data.cloudfunctions.net/CreatePayment`;
+    console.log('createEasypayPayment args', user, orderId, amount, method);
     const body = this.buildRequestBody(user, orderId, amount, method);
-    return fetch(url, {method: 'POST', body: JSON.stringify(body)});
+    return fetch(url, {method: 'POST', headers: {
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify(body)});
   }
 
   deleteEasypayPayment(easypayPaymentId: string) {
     const url  = `https://europe-west1-scuver-data.cloudfunctions.net/DeletePayment`;
-    return fetch(url, {body: JSON.stringify({easypayPaymentId})});
+    return fetch(url, {headers: {
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify({easypayPaymentId})});
   }
 
   // --------------------------------------------------------------------------------------------------------

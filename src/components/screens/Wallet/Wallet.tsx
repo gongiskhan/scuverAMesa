@@ -1,6 +1,6 @@
 import {Button, Card, Container, Icon, Text, TextField} from '@src/components/elements';
 import * as React from 'react';
-import {I18nManager, Image, View} from 'react-native';
+import {Alert, I18nManager, Image, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
 import {useEffect, useState} from "react";
@@ -19,19 +19,31 @@ const Wallet: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [amount, setAmount] = useState<string>('');
   useEffect(() => {
-    UserService.getCurrentUser().then(u => {
+    UserService.observeCurrentUser().subscribe(u => {
       setUser(u);
     });
   }, []);
 
   const chargeMBWAY = () => {
     EasypayService.createEasypayPayment(user, UIDGenerator.generate(), Number(amount), 'mbw').then(r => {
-      console.log('R', r);
+      if (r.ok) {
+        Alert.alert('Informação', `Foi enviado um pedido mbway para ${user?.phoneNumber} no valor de ${amount} EUR.`);
+      } else {
+        Alert.alert('Erro', r.statusText);
+      }
+    }).catch(err => {
+      Alert.alert('Erro', err);
     });
   }
   const chargeMBREF = () => {
     EasypayService.createEasypayPayment(user, UIDGenerator.generate(), Number(amount), 'mb').then(r => {
-      console.log('R', r);
+      if (r.ok) {
+        Alert.alert('Informação', `Utilize os seguintes dados para carregar a sua carteira com ${amount} EUR: ${r.statusText}`);
+      } else {
+        Alert.alert('Erro', r.statusText);
+      }
+    }).catch(err => {
+      Alert.alert('Erro', err);
     });
   }
 
