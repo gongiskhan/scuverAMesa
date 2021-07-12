@@ -6,7 +6,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
   },
   menuInfo: {
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   mainDishText: {
     marginBottom: 5,

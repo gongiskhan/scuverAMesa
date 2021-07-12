@@ -1,80 +1,54 @@
 import * as React from 'react';
 import {ScrollView, Image} from 'react-native';
 import ListRowItem from '@src/components/elements/List/ListRowItem';
-import {activityHistoryDetail} from '@src/data/mock-activity-history';
 import {Divider, Container, Icon, Button, Text} from '@src/components/elements';
 import useThemeColors from '@src/custom-hooks/useThemeColors';
 import StepIndicator from 'react-native-step-indicator';
 import {StepIndicatorStyles} from 'react-native-step-indicator/lib/typescript/src/types';
 import OrderSummary from './OrderSummary';
 import styles from './styles';
+import {Order} from "@src/models/order";
+import {Route, useNavigation} from "@react-navigation/native";
+import {useEffect, useState} from "react";
+import {Item} from "@src/models/item";
+import {OptionGroupService} from "@src/services/option-group.service";
+import {OrderService} from "@src/services/order.service";
 
-type ActivityHistoryDetailProps = {};
+type ActivityHistoryDetailProps = {
+  route: Route<any>
+};
 
-const ActivityHistoryDetail: React.FC<ActivityHistoryDetailProps> = () => {
-  const {primary, text, background, secondary} = useThemeColors();
+const ActivityHistoryDetail: React.FC<ActivityHistoryDetailProps> = ({route}) => {
 
-  const labels = [activityHistoryDetail.from, activityHistoryDetail.to];
+  const navigation = useNavigation();
+  const [order, setOrder] = useState<Order | null>(null);
+  useEffect(() => {
+    setOrder((route.params as any).order as Order);
+  }, []);
 
-  const stepIndicatorStyles: StepIndicatorStyles = {
-    currentStepIndicatorSize: 35,
-    stepStrokeCurrentColor: background,
-    separatorFinishedColor: primary,
-    separatorUnFinishedColor: secondary,
-    stepIndicatorFinishedColor: primary,
-    stepIndicatorUnFinishedColor: background,
-    stepIndicatorCurrentColor: background,
-    stepIndicatorLabelFontSize: 12,
-    currentStepIndicatorLabelFontSize: 12,
-    stepIndicatorLabelCurrentColor: text,
-    stepIndicatorLabelFinishedColor: 'white',
-    stepIndicatorLabelUnFinishedColor: text,
-    labelColor: text,
-    labelAlign: 'flex-start',
-    currentStepLabelColor: text,
-    separatorStrokeWidth: 2,
-  };
-
-  const renderLabel = (params: {position: number; stepStatus: string}) => {
-    const {position} = params;
-    switch (position) {
-      case 0:
-        return <Icon name="utensils" isPrimary />;
-      case 1:
-        return <Icon name="map-marker-alt" isPrimary />;
-      default:
-        return null;
-    }
-  };
+  const reorder = (order) => {
+    OrderService.setCurrentOrder(order).then(() =>{
+      navigation.navigate('CheckoutScreen');
+    });
+  }
 
   return (
     <ScrollView>
       <ListRowItem
-        title={activityHistoryDetail.restaurantName}
-        note={`Booking ID: ${activityHistoryDetail.bookingId}`}
-        subTitle={`Status: ${activityHistoryDetail.status}`}
+        title={order?.shop?.name || ''}
+        note={`Ref.: ${order?.uid}`}
         leftIcon={
           <Image
-            source={require('@src/assets/common/food.png')}
+            source={order?.shop?.photoUrl ? {uri: order?.shop.photoUrl} : require('../../../assets/app/store_3.png')}
             style={styles.icon}
           />
         }
       />
       <Divider />
-      <Container style={styles.locationTrackingContainer}>
-        <StepIndicator
-          customStyles={stepIndicatorStyles}
-          labels={labels}
-          direction="vertical"
-          stepCount={2}
-          renderStepIndicator={renderLabel}
-        />
-      </Container>
-      <Divider />
-      <OrderSummary orderDetail={activityHistoryDetail.orderDetail} />
+      <OrderSummary name={order?.shop?.name || ''} price={order?.total || 0} orderItems={order?.orderItems || []}/>
       <Container style={styles.footer}>
-        <Button isFullWidth>
-          <Text isWhite>Contact Us</Text>
+        <Button isFullWidth onPress={() => reorder(order)}>
+          <Text isWhite>Re-Encomendar</Text>
         </Button>
       </Container>
     </ScrollView>

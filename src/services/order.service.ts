@@ -124,10 +124,14 @@ class OrderServiceClass {
   }
 
   getOrdersByUser(userId: string): Promise<Array<Order | null>> {
+
     return this.firestoreService.observeRecordsByProperty('orders', 'user.uid', '==', userId)
     .pipe(
       take(1),
-      map((orders: Order[]) => orders.map(order => order ? {...new Order(), ...order} : null))
+      map((orders: Order[]) => {
+        console.log('orders.len', orders.length);
+        return orders.map(order => order ? {...new Order(), ...order} : null)
+      })
     ).toPromise();
   }
 

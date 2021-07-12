@@ -13,7 +13,7 @@ const ActivityHistoryStack: React.FC<ActivityHistoryStackProps> = () => {
       <Stack.Screen
         options={() => {
           return {
-            title: 'Activity History',
+            title: 'Histórico de Encomendas',
           };
         }}
         name="ActivityHistoryScreen"

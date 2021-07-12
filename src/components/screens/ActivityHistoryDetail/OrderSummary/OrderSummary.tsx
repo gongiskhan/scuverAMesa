@@ -4,42 +4,39 @@ import {Container, Text, Section, Divider} from '@src/components/elements';
 import styles from './styles';
 import {formatCurrency} from '@src/utils/number-formatter';
 import {OrderDetail} from '@src/data/mock-activity-history';
+import {OrderItem} from "@src/models/order-item";
 
 type OrderSummaryProps = {
-  orderDetail: OrderDetail;
+  name: string;
+  price: number;
+  orderItems: Array<OrderItem | null>
 };
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
-  orderDetail: {name, price, shippingFee, totalItems},
+  name, price, orderItems
 }) => {
-  const totalPrice = price * totalItems;
 
   return (
     <Section title="Order Summary">
       <Container>
         <View style={styles.menuContainer}>
           <View style={styles.menuInfo}>
-            <View>
-              <Text style={styles.mainDishText} isBold>
-                {name}
-              </Text>
-            </View>
+            {orderItems.map(orderItem => {
+              return (
+                <View>
+                  <Text style={styles.mainDishText} isBold>
+                    {orderItem?.name} - {formatCurrency(orderItem?.price || 0)}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
-          <Text isBold>{formatCurrency(totalPrice)}</Text>
         </View>
         <Divider />
         <View style={styles.priceContainer}>
-          <View style={styles.subTotalContainer}>
-            <Text>Subtotal</Text>
-            <Text>{formatCurrency(totalPrice)}</Text>
-          </View>
-          <View style={styles.deliveryFee}>
-            <Text>Delivery: 6.1km</Text>
-            <Text>{formatCurrency(shippingFee)}</Text>
-          </View>
           <View style={styles.deliveryFee}>
             <Text>Total</Text>
-            <Text>{formatCurrency(totalPrice + shippingFee)}</Text>
+            <Text>{formatCurrency(price)}</Text>
           </View>
         </View>
       </Container>

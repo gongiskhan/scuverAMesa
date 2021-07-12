@@ -89,7 +89,7 @@ const ShopDetails: React.FC<PlaceDetailsProps> = () => {
                 ]}>
                 {shop.photoUrl ? (
                   <Animated.Image
-                    source={{uri: shop.photoUrl}}
+                    source={shop?.photoUrl ? {uri: shop.photoUrl} : require('../../../assets/app/store_3.png')}
                     style={[
                       styles.coverPhoto,
                       {

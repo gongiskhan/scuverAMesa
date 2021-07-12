@@ -1,19 +1,15 @@
-import {Button, Card, Container, Icon, Text, TextField} from '@src/components/elements';
+import {Button, Card, Container, Text, TextField} from '@src/components/elements';
 import * as React from 'react';
-import {Alert, I18nManager, Image, View} from 'react-native';
-import {I18nManager, Image, Linking, TouchableOpacity, View} from 'react-native';
+import {useEffect, useState} from 'react';
+import {Alert, Image, Linking, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
-import {useEffect, useState} from "react";
 import {User} from "@src/models/user";
 import {UserService} from "@src/services/user.service";
-import {OrderService} from "@src/services/order.service";
 import {formatCurrency} from "@src/utils/number-formatter";
 import {EasypayService} from "@src/services/easypay.service";
 import {UIDGenerator} from "@src/utils/uid-generator";
 import useThemeColors from "@src/custom-hooks/useThemeColors";
-import {Link} from "@react-navigation/native";
-import PropTypes from "prop-types";
 
 const Wallet: React.FC = () => {
 
