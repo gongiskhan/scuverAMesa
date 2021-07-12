@@ -13,6 +13,8 @@ import {useEffect, useState} from "react";
 import {Item} from "@src/models/item";
 import {OptionGroupService} from "@src/services/option-group.service";
 import {OrderService} from "@src/services/order.service";
+import {UIDGenerator} from "@src/utils/uid-generator";
+import {MyMoment} from "@src/utils/time-helper";
 
 type ActivityHistoryDetailProps = {
   route: Route<any>
@@ -27,8 +29,12 @@ const ActivityHistoryDetail: React.FC<ActivityHistoryDetailProps> = ({route}) =>
   }, []);
 
   const reorder = (order) => {
-    OrderService.setCurrentOrder(order).then(() =>{
-      navigation.navigate('CheckoutScreen');
+    const newOrder = JSON.parse(JSON.stringify(order));
+    newOrder.uid = UIDGenerator.generate();
+    OrderService.addOrder(newOrder).then((o) => {
+      OrderService.setCurrentOrder(newOrder).then(() =>{
+        navigation.navigate('CheckoutScreen');
+      });
     });
   }
 

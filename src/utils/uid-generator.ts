@@ -44,11 +44,13 @@ export class UIDGenerator {
 
       if (!duplicateTime) {
           for (i = 0; i < 12; i++) {
+              // @ts-ignore
               UIDGenerator.lastRandChars[i] = Math.floor(Math.random() * 64);
           }
       } else {
           // If the timestamp hasn't changed since last push, use the same random number, except incremented by 1.
           for (i = 11; i >= 0 && UIDGenerator.lastRandChars[i] === 63; i--) {
+              // @ts-ignore
               UIDGenerator.lastRandChars[i] = 0;
           }
           UIDGenerator.lastRandChars[i]++;
@@ -60,5 +62,5 @@ export class UIDGenerator {
 
       return id;
   }
-  
+
 }
