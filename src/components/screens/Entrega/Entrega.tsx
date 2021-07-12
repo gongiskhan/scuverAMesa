@@ -16,7 +16,7 @@ const Entrega: React.FC = () => {
     <SafeAreaView style={styles.root}>
       <Image
         style={styles.stretch}
-        source={require('../../../assets/app/lona_quadrado_20cm.png')}/>
+        source={require('../../../assets/app/fyer_scuver_A5_AF_.png')}/>
       <Button style={{ marginTop: '5%', width: '80%', marginLeft: '10%' }} onPress={gotoScuver}>
         <Text style={{color: 'white'}}>Ir para Entregas Scuver</Text>
       </Button>

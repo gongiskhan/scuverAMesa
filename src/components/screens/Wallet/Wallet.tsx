@@ -132,11 +132,11 @@ const Wallet: React.FC = () => {
           </View>
         </Container>
       </Card>
-      <Card>
-        <Text>
-          Cartão de Crédito
-        </Text>
-      </Card>
+      {/*<Card>*/}
+      {/*  <Text>*/}
+      {/*    Cartão de Crédito*/}
+      {/*  </Text>*/}
+      {/*</Card>*/}
     </SafeAreaView>
   );
 };

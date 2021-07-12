@@ -52,7 +52,7 @@ const CheckoutStack: React.FC<CheckoutStackProps> = (props) => {
         options={{
           headerLeftContainerStyle: styles.headerLeftContainer,
           headerLeft: _renderHeaderLeft,
-          headerTitle: 'Neapolitan Pizza',
+          headerTitle: 'O Seu Pedido',
         }}
         component={Checkout}
       />

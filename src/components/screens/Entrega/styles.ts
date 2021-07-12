@@ -6,7 +6,7 @@ export default StyleSheet.create({
   },
   stretch: {
     width: '100%',
-    height: '85%',
+    height: '92%',
     resizeMode: 'stretch'
   },
 });

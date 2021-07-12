@@ -208,7 +208,7 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
           <Text style={styles.headerTitle}>{data.name}</Text>
         </Animated.View>
       </View>
-      <BasketSummary />
+      {/*<BasketSummary />*/}
     </SafeAreaView>
   );
 };

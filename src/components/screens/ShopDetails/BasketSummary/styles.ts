@@ -5,29 +5,29 @@ export default StyleSheet.create({
   },
   viewBasketButton: {
     flexDirection: 'row',
-    paddingLeft: 20,
-    paddingRight: 20,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  viewBasketButtonTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  viewBasketButtonText: {
-    fontSize: 16,
-    padding: 2,
-    marginRight: 10,
+  basketIcon: {
     color: 'white',
+    flex: 1
   },
-  cardItemText: {
+  chevronIcon: {
     color: 'white',
-    marginLeft: 10
+    flex: 1
+  },
+  numberOfItemsText: {
+    color: 'white',
+    flex: 2
   },
   totalPriceText: {
     fontSize: 16,
     color: 'white',
-    marginLeft: 150
+    flex: 5
+  },
+  viewOrderText: {
+    color: 'white',
+    flex: 3
   },
 });

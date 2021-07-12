@@ -34,19 +34,15 @@ const BasketSummary: React.FC<BasketSummaryProps> = () => {
           <Button
             childrenContainerStyle={styles.viewBasketButton}
             onPress={_onViewBasketButtonPressed}>
-            <View style={styles.viewBasketButtonTextContainer}>
-              <Icon name="basket" size={22} useIonicons style={{color: 'white'}} />
-              {/*<Text isBold style={styles.viewBasketButtonText}>*/}
-              {/*  Carrinho:*/}
-              {/*</Text>*/}
-              <Text style={styles.cardItemText}>{`${order.orderItems.length} ${
-                order.orderItems.length > 1 ? 'artigos' : 'artigo'
-              }`}</Text>
-            </View>
+            <Icon style={styles.basketIcon} name="basket" size={22} useIonicons />
+            <Text style={styles.numberOfItemsText}>{`${order.orderItems.length} ${
+              order.orderItems.length > 1 ? 'artigos' : 'artigo'
+            }`}</Text>
             <Text style={styles.totalPriceText} isBold>
-              {formatCurrency(order.total)}
+              - {formatCurrency(order.total)}
             </Text>
-            <Icon name="chevron-forward" size={22} useIonicons style={{color: 'white'}} />
+            <Text style={styles.viewOrderText}> Ver Pedido </Text>
+            <Icon style={styles.chevronIcon} name="chevron-forward" size={22} useIonicons />
           </Button>
         </Container>
       )}
