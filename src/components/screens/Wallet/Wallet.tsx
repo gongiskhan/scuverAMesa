@@ -7,7 +7,7 @@ import styles from './styles';
 import {User} from "@src/models/user";
 import {UserService} from "@src/services/user.service";
 import {formatCurrency} from "@src/utils/number-formatter";
-import {EasypayService} from "@src/services/easypay.service";
+import {EasypayService, EasypayServiceClass} from "@src/services/easypay.service";
 import {UIDGenerator} from "@src/utils/uid-generator";
 import useThemeColors from "@src/custom-hooks/useThemeColors";
 
@@ -16,9 +16,11 @@ const Wallet: React.FC = () => {
   const {card} = useThemeColors();
   const [user, setUser] = useState<User | null>(null);
   const [amount, setAmount] = useState<string>('');
+  const [mbDetails, setMBDetails] = useState<any>(null);
   useEffect(() => {
     UserService.observeCurrentUser().subscribe(u => {
       setUser(u);
+      EasypayService.getEasypayPaymentMbDetailsForUser(u.uid).then(d => setMBDetails(d.method));
     });
   }, []);
 
@@ -39,21 +41,9 @@ const Wallet: React.FC = () => {
       r.json().then(res => {
         console.log('RRR', res);
       });
-      // method
-      //     "entity"
-      //   :
-      //     "21098", "reference"
-      //   :
-      //     "503037702", "status"
-
       if (r.ok) {
-        Alert.alert('Informação', `Utilize a entidade e referência gerados com um valor livre para carregar a sua carteira. Estes dados podem ser utilizados as vezes que quiser.`);
-        // Alert.alert('Informação', `
-        // Utilize os seguintes dados para carregar a sua carteira:
-        // \n\r Entidade: ${mbDetails?.ent}
-        // \n\r Referência: ${mbDetails?.ref}
-        // \n\r Valor: ${amount} EUR
-        // `);
+        EasypayService.getEasypayPaymentMbDetailsForUser(user?.uid).then(d => setMBDetails(d.method));
+        Alert.alert('Informação', `Utilize a entidade e referência gerados com um valor livre para carregar a sua carteira. Estes dados podem ser utilizados sempre que quiser.`);
       } else {
         Alert.alert('Erro', r.statusText);
       }
@@ -85,16 +75,43 @@ const Wallet: React.FC = () => {
         </Text>
       </Card>
       <Card style={{padding: 20, paddingVertical: 30}}>
-        <Text style={{fontSize: 18, textAlignVertical: "bottom"}}>Valor a carregar:</Text>
-        <TextField
-          autoFocus
-          style={{fontSize: 18, marginLeft: 130, position: 'relative', bottom: 10}}
-          value={amount}
-          onChangeText={a => setAmount(a)}
-          placeholder="Inserir aqui"
-          placeholderTextColor={'#ccc'}
-          keyboardType="numeric"
-        />
+        <Container style={{
+          height: '100%',
+          flexWrap: 'wrap',
+          alignItems: 'baseline',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
+          <View style={{flex: 5, backgroundColor: '#999', flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
+            <Image source={require('../../../assets/app/mbway.png')}
+                   style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
+          </View>
+          <Text style={{fontSize: 18, textAlignVertical: "bottom"}}>Valor a carregar:</Text>
+          <TextField
+            autoFocus
+            style={{fontSize: 18, marginLeft: 130, position: 'relative', bottom: 10}}
+            value={amount}
+            onChangeText={a => setAmount(a)}
+            placeholder="Inserir aqui"
+            placeholderTextColor={'#ccc'}
+            keyboardType="numeric"
+          />
+          <Button
+            onPress={chargeMBWAY}
+          >
+            <Text style={{color: '#fff', fontSize: 18}}>Carregar com MBWAY</Text>
+          </Button>
+          <View style={{width: '100%', marginTop: 40, flex: 2, flexDirection: 'row', alignItems: 'flex-end'}}>
+            <Text style={{alignSelf: 'flex-end'}}>
+              Sabe que pode utilizar o seu cartão de refeição com o MBWAY?
+              <Text onPress={() => {
+                Linking.openURL('https://www.mbway.pt/cartoes-refeicao')
+              }}>
+                <Text style={{alignSelf: 'flex-end'}} isPrimary> https://www.mbway.pt/cartoes-refeicao</Text>
+              </Text>
+            </Text>
+          </View>
+        </Container>
       </Card>
       <Card style={{height: 250}}>
         <Container style={{
@@ -105,8 +122,6 @@ const Wallet: React.FC = () => {
           justifyContent: 'space-between'
         }}>
           <View style={{flex: 5, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
-            <Image source={require('../../../assets/app/mbway.png')}
-                   style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
             <Image source={require('../../../assets/app/mbref.png')}
                    style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
           </View>
@@ -118,26 +133,17 @@ const Wallet: React.FC = () => {
             justifyContent: 'space-around',
             alignSelf: 'flex-end'
           }}>
-            <Button
-              onPress={chargeMBWAY}
-            >
-              <Text style={{color: '#fff', fontSize: 18}}>Usar MBWAY</Text>
-            </Button>
-            <Button
+            {mbDetails ? (
+              <View>
+                <Text style={{color: '#555', fontSize: 16}}>Ent.: {mbDetails.entity}</Text>
+                <Text style={{color: '#555', fontSize: 16}}>Ref.: {mbDetails.reference}</Text>
+                <Text style={{color: '#555', fontSize: 16}}>€: LIVRE</Text>
+              </View>
+            ) : (<Button
               onPress={chargeMBREF}
             >
-              <Text style={{color: '#fff', fontSize: 18}}>Gerar Ref. MB</Text>
-            </Button>
-          </View>
-          <View style={{width: '100%', marginTop: 40, flex: 2, flexDirection: 'row', alignItems: 'flex-end'}}>
-            <Text style={{alignSelf: 'flex-end'}}>
-              Sabe que pode utilizar o seu cartão de refeição com o MBWAY?
-              <Text onPress={() => {
-                Linking.openURL('https://www.mbway.pt/cartoes-refeicao')
-              }}>
-                <Text style={{alignSelf: 'flex-end'}} isPrimary> https://www.mbway.pt/cartoes-refeicao</Text>
-              </Text>
-            </Text>
+              <Text style={{color: '#fff', fontSize: 18}}>Gerar Referência Multibanco</Text>
+            </Button>)}
           </View>
         </Container>
       </Card>

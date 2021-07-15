@@ -57,6 +57,26 @@ export class EasypayServiceClass {
     return this.firestoreService.getCollection('easypay-payments');
   }
 
+  getEasypayPaymentMbDetailsForUser(userUID): any {
+    return new Promise(resolve => {
+      this.firestoreService.getRecordsByProperty('easypay-payments', 'customer.key', '==', userUID).then(records => {
+        console.log('records.length', records.length);
+        let lastMBRecord = null;
+        if (records && records.length) {
+          records.forEach(r => {
+            if (r.method.type === 'MB') {
+              lastMBRecord = r;
+            }
+          });
+          console.log('lastMbRecord', lastMBRecord)
+          resolve(lastMBRecord);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  }
+
   updateEasypayPayment(easypayPayment: EasypayPayment): Promise<EasypayPayment> {
     return this.firestoreService
     .addOrUpdateRecord('easypay-payments', JSON.parse(JSON.stringify(easypayPayment))) as Promise<EasypayPayment>;
