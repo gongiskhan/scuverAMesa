@@ -29,8 +29,8 @@ export class EasypayServiceClass {
     return this.currentEasypayPayment$.asObservable();
   }
 
-  createEasypayPayment(user: User | null, orderId: string, amount: number, method: 'mb'|'mbw') {
-    const url  = `https://europe-west1-scuver-data.cloudfunctions.net/CreatePayment`;
+  createEasypayPayment(user: User | null, orderId: string, amount: number, method: 'mb'|'mbw', type = 'CreatePayment') {
+    const url  = `https://europe-west1-scuver-data.cloudfunctions.net/${type}`;
     console.log('createEasypayPayment args', user, orderId, amount, method);
     const body = this.buildRequestBody(user, orderId, amount, method);
     return fetch(url, {method: 'POST', headers: {

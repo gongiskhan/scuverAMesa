@@ -33,10 +33,27 @@ const Wallet: React.FC = () => {
       Alert.alert('Erro', err);
     });
   }
+
   const chargeMBREF = () => {
-    EasypayService.createEasypayPayment(user, UIDGenerator.generate(), Number(amount), 'mb').then(r => {
+    EasypayService.createEasypayPayment(user, UIDGenerator.generate(), 0, 'mb', 'CreateFrequentPayment').then(r => {
+      r.json().then(res => {
+        console.log('RRR', res);
+      });
+      // method
+      //     "entity"
+      //   :
+      //     "21098", "reference"
+      //   :
+      //     "503037702", "status"
+
       if (r.ok) {
-        Alert.alert('Informação', `Utilize os seguintes dados para carregar a sua carteira com ${amount} EUR: ${r.statusText}`);
+        Alert.alert('Informação', `Utilize a entidade e referência gerados com um valor livre para carregar a sua carteira. Estes dados podem ser utilizados as vezes que quiser.`);
+        // Alert.alert('Informação', `
+        // Utilize os seguintes dados para carregar a sua carteira:
+        // \n\r Entidade: ${mbDetails?.ent}
+        // \n\r Referência: ${mbDetails?.ref}
+        // \n\r Valor: ${amount} EUR
+        // `);
       } else {
         Alert.alert('Erro', r.statusText);
       }
@@ -62,41 +79,16 @@ const Wallet: React.FC = () => {
           marginTop: 50
         }}>Carteira: {formatCurrency(user?.wallet || 0)}</Text>
       </Container>
-      {/*<Card style={{*/}
-      {/*  width: 500,*/}
-      {/*  height: 500,*/}
-      {/*  justifyContent: 'space-between',*/}
-      {/*}}>*/}
-      {/*  <Text>JBLSKJBLSKJSBLJKSBSJBSLJSHB</Text>*/}
-      {/*  <View style={{*/}
-      {/*    width: 100,*/}
-      {/*    height: 100,*/}
-      {/*  }}>*/}
-      {/*    <Text>TEXT</Text>*/}
-      {/*  </View>*/}
-      {/*  <View style={{*/}
-      {/*    width: 100,*/}
-      {/*    height: 100,*/}
-      {/*  }}>*/}
-      {/*    <Text>TEXT</Text>*/}
-      {/*  </View>*/}
-      {/*  <View style={{*/}
-      {/*    width: 100,*/}
-      {/*    height: 100,*/}
-      {/*  }}>*/}
-      {/*    <Text>TEXT</Text>*/}
-      {/*  </View>*/}
-      {/*</Card>*/}
       <Card title="Carregar a Carteira">
         <Text style={{textAlign: 'justify', margin: 10, marginTop: 20}}>
-          Carregue a sua carteira para efetuar pedidos no Scuver, seja no estabelecimento ou na aplicação de entregas.
+          Carregue a sua carteira para efetuar pedidos Scuver, seja no estabelecimento ou na aplicação de entregas.
         </Text>
       </Card>
       <Card style={{padding: 20, paddingVertical: 30}}>
         <Text style={{fontSize: 18, textAlignVertical: "bottom"}}>Valor a carregar:</Text>
         <TextField
           autoFocus
-          style={{fontSize: 18, marginLeft: 130, position:'relative', bottom: 10}}
+          style={{fontSize: 18, marginLeft: 130, position: 'relative', bottom: 10}}
           value={amount}
           onChangeText={a => setAmount(a)}
           placeholder="Inserir aqui"
@@ -105,12 +97,27 @@ const Wallet: React.FC = () => {
         />
       </Card>
       <Card style={{height: 250}}>
-        <Container style={{height: '100%', flexWrap: 'wrap', alignItems: 'baseline', flexDirection: 'column', justifyContent: 'space-between'}}>
+        <Container style={{
+          height: '100%',
+          flexWrap: 'wrap',
+          alignItems: 'baseline',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
           <View style={{flex: 5, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
-            <Image source={require('../../../assets/app/mbway.png')} style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
-            <Image source={require('../../../assets/app/mbref.png')} style={{flex: 1, resizeMode: 'contain',  flexShrink: 1, width: 100, height: 100}}/>
+            <Image source={require('../../../assets/app/mbway.png')}
+                   style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
+            <Image source={require('../../../assets/app/mbref.png')}
+                   style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
           </View>
-          <View style={{width: '100%', flex: 3, flexGrow: 2, flexDirection: 'row', justifyContent: 'space-around', alignSelf: 'flex-end'}}>
+          <View style={{
+            width: '100%',
+            flex: 3,
+            flexGrow: 2,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignSelf: 'flex-end'
+          }}>
             <Button
               onPress={chargeMBWAY}
             >
@@ -119,13 +126,15 @@ const Wallet: React.FC = () => {
             <Button
               onPress={chargeMBREF}
             >
-              <Text style={{color: '#fff', fontSize: 18}}>Usar Ref. MB</Text>
+              <Text style={{color: '#fff', fontSize: 18}}>Gerar Ref. MB</Text>
             </Button>
           </View>
-          <View style={{width: '100%', marginTop: 40,flex: 2, flexDirection: 'row', alignItems: 'flex-end'}}>
+          <View style={{width: '100%', marginTop: 40, flex: 2, flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text style={{alignSelf: 'flex-end'}}>
               Sabe que pode utilizar o seu cartão de refeição com o MBWAY?
-              <Text onPress={ ()=>{ Linking.openURL('https://www.mbway.pt/cartoes-refeicao') }}>
+              <Text onPress={() => {
+                Linking.openURL('https://www.mbway.pt/cartoes-refeicao')
+              }}>
                 <Text style={{alignSelf: 'flex-end'}} isPrimary> https://www.mbway.pt/cartoes-refeicao</Text>
               </Text>
             </Text>
