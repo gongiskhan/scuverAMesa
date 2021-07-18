@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Animated, KeyboardAvoidingView, Platform, SafeAreaView, View,} from 'react-native';
 import {Route, useNavigation, useTheme} from '@react-navigation/native';
-import {Button, Text} from '@src/components/elements';
+import {Button, Card, Container, Text, TextField} from '@src/components/elements';
 import HeadingInformation from './HeadingInformation';
 import AddToBasketForm from './AddToBasketForm';
 import {formatCurrency} from '@src/utils/number-formatter';
@@ -22,8 +22,10 @@ type DishDetailsProps = {
 
 export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
 
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [data, setData]: any = useState({});
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [data, setData] = useState<any>({});
+  const [quantity, setQuantity] = useState<any>(1);
+  const [obs, setObs] = useState<any>('');
 
   const [scrollY] = React.useState(new Animated.Value(0));
   const {
@@ -47,7 +49,9 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
   }, []);
 
   const updateTotalDishAmount = React.useCallback(
-    () => {
+    (qtd) => {
+      setQuantity(qtd);
+      // console.log('qtd', qtd);
       // console.log('data?.optionsSelected', data?.optionsSelected);
       const totalSelectedOptionsPrice = data?.optionsSelected?.reduce(
         (prevValue: any, currentValue: any) => prevValue + currentValue.price,
@@ -55,20 +59,18 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
       ) || 0;
       // console.log('data.price', data.price);
       // console.log('totalSelectedOptionsPrice', totalSelectedOptionsPrice);
-      setTotalPrice(
-        parseFloat(data.price) + totalSelectedOptionsPrice,
-      );
+      setTotalPrice((parseFloat(data.price) + totalSelectedOptionsPrice) * qtd);
     },
     [data],
   );
-  useEffect(updateTotalDishAmount.bind(this), [data]);
+  useEffect(() => updateTotalDishAmount(quantity), [data, quantity]);
 
   const onAddToBasketButtonPressed = async () => {
 
     let order = await OrderService.getCurrentOrder().pipe(take(1)).toPromise();
     if (!order) order = await OrderHelper.buildNewOrder();
 
-    const orderItem = OrderHelper.itemToOrderItem(data, 1);
+    const orderItem = OrderHelper.itemToOrderItem(data, quantity, obs);
     order.orderItems.push(orderItem);
 
     await OrderService.setCurrentOrder(order);
@@ -181,11 +183,18 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
                   }
                 }
                 // console.log('data?.optionsSelected', data?.optionsSelected);
-                updateTotalDishAmount();
+                updateTotalDishAmount(quantity);
                 return !optionAlreadySelected && !maximumOptionsSelected;
               }}
             />
-            <AddToBasketForm updateTotalDishAmount={updateTotalDishAmount} />
+            <Card style={{marginTop: 20}}>
+              <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 20}}>Observações</Text>
+              <TextField
+                onChangeText={setObs}
+                placeholder="Ex: Um sem cebola e outro sem tomate."
+              />
+            </Card>
+            <AddToBasketForm updateTotalDishAmount={(qtd) => updateTotalDishAmount(qtd)} />
           </Animated.ScrollView>
         </KeyboardAvoidingView>
         <View style={styles.addToBasketButtonContainer}>

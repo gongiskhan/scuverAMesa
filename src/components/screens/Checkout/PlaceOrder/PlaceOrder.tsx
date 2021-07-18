@@ -37,7 +37,7 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({totalPrice, shippingFee}) => {
   }, []);
 
   const _onPlaceOrderButtonPressed = () => {
-    if (user && user.wallet > totalPrice) {
+    if (user && totalPrice && user.wallet > totalPrice) {
       Alert.alert(
         "Confirmação",
         `Submeter pedido? O valor de €${totalPrice} será deduzido da sua Carteira Scuver`,

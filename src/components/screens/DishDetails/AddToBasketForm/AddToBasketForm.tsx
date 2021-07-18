@@ -19,22 +19,19 @@ const AddToBasketForm: React.FC<AddToBasketFormProps> = ({
 
   const onButtonPressed = (amount: number) => {
     return () => {
+      // console.log('onButtonPressed', amount, totalAmount);
       if (totalAmount === 1 && amount < 1) {
         return;
       }
       const newTotalAmount = totalAmount + amount;
       setTotalAmount(newTotalAmount);
+      // console.log('newTotalAmount', newTotalAmount);
       updateTotalDishAmount(newTotalAmount);
     };
   };
 
   return (
     <Container style={styles.formContainer}>
-      <Text style={styles.title}>Special Instruction</Text>
-      <TextField
-        containerStyle={styles.textField}
-        placeholder="E.g. No onions, please"
-      />
       <Container style={styles.buttonGroupSection}>
         <Container style={styles.buttonGroupContainer}>
           <Button style={styles.button} onPress={onButtonPressed(-1)}>

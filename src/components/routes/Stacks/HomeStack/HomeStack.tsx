@@ -62,11 +62,11 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
         options={() => {
           return {
             headerShown: false,
-            // headerTitle: _renderExploreHeaderTitle,
+            headerTitle: _renderExploreHeaderTitle,
             title: 'Restaurantes Scuver',
-            // headerTitleAlign: 'left',
-            // headerRight: _renderExploreHeaderRight,
-            // headerRightContainerStyle: styles.headerRightContainer,
+            headerTitleAlign: 'left',
+            headerRight: _renderExploreHeaderRight,
+            headerRightContainerStyle: styles.headerRightContainer,
           };
         }}
         name="HomeScreen"

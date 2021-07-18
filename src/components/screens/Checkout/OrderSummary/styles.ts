@@ -30,4 +30,27 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  buttonGroupSection: {
+    alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  buttonGroupContainer: {
+    width: 130,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  button: {
+    width: 45,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    backgroundColor: 'transparent',
+  },
+  amount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });

@@ -33,9 +33,7 @@ const Basket: React.FC<BasketProps> = () => {
           bottom: 25,
         }}>
         {/*<DeliveryInformation />*/}
-        <OrderSummary
-          order={order}
-        />
+        <OrderSummary/>
       </ScrollView>
       <PlaceOrder totalPrice={order.total} shippingFee={0} />
     </View>

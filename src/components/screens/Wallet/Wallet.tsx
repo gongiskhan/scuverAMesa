@@ -1,4 +1,4 @@
-import {Button, Card, Container, Text, TextField} from '@src/components/elements';
+import {Button, Card, Container, Icon, Text, TextField} from '@src/components/elements';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Alert, Image, Linking, View} from 'react-native';
@@ -10,6 +10,7 @@ import {formatCurrency} from "@src/utils/number-formatter";
 import {EasypayService, EasypayServiceClass} from "@src/services/easypay.service";
 import {UIDGenerator} from "@src/utils/uid-generator";
 import useThemeColors from "@src/custom-hooks/useThemeColors";
+import {Link} from "@react-navigation/native";
 
 const Wallet: React.FC = () => {
 
@@ -22,7 +23,7 @@ const Wallet: React.FC = () => {
   useEffect(() => {
     UserService.observeCurrentUser().subscribe(u => {
       setUser(u);
-      // EasypayService.getEasypayPaymentMbDetailsForUser(u.uid).then(d => setMBDetails(d.method));
+      EasypayService.getEasypayPaymentMbDetailsForUser(u.uid).then(d => setMBDetails(d.method));
     });
   }, []);
 
@@ -80,9 +81,11 @@ const Wallet: React.FC = () => {
       <Card>
         <Text style={{textAlign: 'justify', margin: 10, marginTop: 20}}>
           Carregue a sua carteira para efetuar pedidos Scuver, seja no estabelecimento ou na aplicação de entregas.
+          {'\n\r'}
+          Se pretender um reembolso por favor envie um e-mail para <Link to={'mailto:scuverpt@gmail.com'}>scuverpt@gmail.com</Link>
         </Text>
       </Card>
-      <Card style={{height: 300}}>
+      <Card style={{height: 250}}>
         <Container style={{
           height: '100%',
           flexWrap: 'wrap',
@@ -90,30 +93,32 @@ const Wallet: React.FC = () => {
           flexDirection: 'column',
           justifyContent: 'space-between'
         }}>
-          <View style={{flex: 5, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
+          <View style={{flex: 3, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
             <Image source={require('../../../assets/app/mbway.png')}
                    style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>
           </View>
-          <View style={{flex: 3, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
+          <View style={{flex: 1, width: '100%', flexDirection: 'row', flexGrow: 1, justifyContent: 'space-between'}}>
             <TextField
               autoFocus
-              style={{fontSize: 25, flexDirection: 'row'}}
+              style={{flex: 2, fontSize: 25, flexGrow: 2, marginRight: 20}}
               value={amount}
               onChangeText={a => setAmount(a)}
-              placeholder="Valor a Carregar"
+              placeholder="Valor"
               placeholderTextColor={'#ccc'}
               keyboardType="numeric"
+              leftIcon={'euro-sign'}
             />
-          </View>
-          <View style={{flex: 2, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>
             <Button
               isLoading={loading}
-              style={{flex: 2, flexDirection: 'row'}}
+              style={{flex: 1, marginLeft: 20, flexDirection: 'row', height: 44}}
               onPress={chargeMBWAY}
             >
-              <Text style={{color: '#fff', fontSize: 18}}>Carregar com MBWAY</Text>
+              <Text style={{color: '#fff', fontSize: 18}}>Carregar</Text>
             </Button>
           </View>
+          {/*<View style={{flex: 2, flexDirection: 'row', flexShrink: 1, justifyContent: 'space-around'}}>*/}
+
+          {/*</View>*/}
           <View style={{width: '100%', marginTop: 10, flex: 2, flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text style={{alignSelf: 'flex-end'}}>
               Sabe que pode utilizar o seu cartão de refeição com o MBWAY?

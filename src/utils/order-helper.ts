@@ -40,10 +40,11 @@ class OrderHelperClass {
     return order;
   }
 
-  itemToOrderItem(item: any, quantity: number) {
+  itemToOrderItem(item: any, quantity: number, obs: string) {
     const orderItem: any = new OrderItem();
     for (const k in item) orderItem[k] = item[k];
     orderItem.quantity = quantity;
+    orderItem.obs = obs;
 
     return orderItem;
   }
@@ -56,8 +57,20 @@ class OrderHelperClass {
     return orderOption;
   }
 
-  removeOrderItem(order: Order, orderItem: OrderItem) {
-    order.orderItems.findIndex((orderItem) => orderItem.uid === orderItem.uid);
+  addOrderItem(order: Order, oItemIndex: number) {
+    const oItem = order.orderItems[oItemIndex];
+    oItem.quantity++;
+    return order;
+  }
+
+  removeOrderItem(order: Order, oItemIndex: number) {
+    const oItem = order.orderItems[oItemIndex];
+    if (oItem.quantity > 1) {
+      oItem.quantity--;
+    } else {
+      order.orderItems.splice(oItemIndex, 1);
+    }
+    return order;
   }
 
   getOrderSubTotal(order: Order) {

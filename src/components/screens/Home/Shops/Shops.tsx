@@ -27,6 +27,7 @@ const Shops: React.FC<ShopsProps> = () => {
         return <ShopListItem
             key={item.uid}
             data={item}
+            isSummary={true}
         />;
       })}
     </Container>

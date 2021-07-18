@@ -10,10 +10,12 @@ import {ShopService} from "@src/services/shop.service";
 
 type ShopListItemProps = {
   data: Shop;
+  isSummary?: boolean;
 };
 
 const ShopListItem: React.FC<ShopListItemProps> = ({
   data,
+  isSummary
 }) => {
   const {photoUrl, name} = data;
   const navigation = useNavigation();
@@ -37,7 +39,7 @@ const ShopListItem: React.FC<ShopListItemProps> = ({
             <Text style={styles.placeTitle}>{name}</Text>
             <Text style={styles.placeSubTitle}>{data.foodType}</Text>
           </View>
-          <ShopCardInfo data={data}/>
+          <ShopCardInfo data={data} isSummary={isSummary}/>
         </View>
       </Container>
     </Touchable>
