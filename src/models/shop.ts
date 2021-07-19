@@ -29,7 +29,7 @@ export class Shop {
     public iban: string = '',
     public promo: number = 0,
     public inShopEnabled = false,
-    public distance = 0,
+    public distanceInMeters = 0,
     public deliveryFee = 0,
     public todaySchedule: DaySchedule = new DaySchedule(),
     public rating = 0,

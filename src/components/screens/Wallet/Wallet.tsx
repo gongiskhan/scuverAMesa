@@ -81,7 +81,7 @@ const Wallet: React.FC = () => {
   return (
     <ScrollView style={styles.root}>
       <Card style={{
-        marginTop: 100,
+        marginTop: 40,
         backgroundColor: 'transparent'
       }}>
         <Text style={{textAlign: 'justify'}}>
@@ -191,7 +191,7 @@ const Wallet: React.FC = () => {
           </View>
         </Container>
       </Card>
-      <Card style={{height: 150}}>
+      <Card style={{height: 100}}>
         <Container style={{
           height: '100%',
           flexDirection: 'column'

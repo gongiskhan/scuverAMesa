@@ -44,7 +44,7 @@ class AuthServiceClass {
         firebase.auth().signInWithCredential(credential).then(authUser => {
           console.log('authUser', authUser);
           //if (authUser.additionalUserInfo?.isNewUser) {
-            this.userService.addUser({
+            UserService.addUser({
               name: authUser.user?.displayName || (authUser.additionalUserInfo?.profile as any).name,
               email: authUser.user?.email || (authUser.additionalUserInfo?.profile as any).email,
               phoneNumber: authUser.user?.phoneNumber,

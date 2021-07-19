@@ -61,7 +61,7 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
           <Button
             style={[styles.button, {backgroundColor: border}]}
             icon={<Icon isPrimary name="map-marker-alt" size={10} />}>
-            <Text isPrimary style={styles.buttonText}>{`${data.distance}~km`}</Text>
+            <Text isPrimary style={styles.buttonText}>{`${Math.round(data.distanceInMeters / 1000)}~km`}</Text>
           </Button>
           {/*<Button*/}
           {/*    style={[styles.button, {backgroundColor: border}]}*/}

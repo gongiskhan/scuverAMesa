@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Animated, KeyboardAvoidingView, Platform, SafeAreaView, View,} from 'react-native';
+import {Alert, Animated, KeyboardAvoidingView, Platform, SafeAreaView, View,} from 'react-native';
 import {Route, useNavigation, useTheme} from '@react-navigation/native';
 import {Button, Card, Container, Text, TextField} from '@src/components/elements';
 import HeadingInformation from './HeadingInformation';
@@ -15,6 +15,8 @@ import {OrderService} from "@src/services/order.service";
 import {OrderHelper} from "@src/utils/order-helper";
 import {take} from "rxjs/operators";
 import BasketSummary from "@src/components/screens/ShopDetails/BasketSummary";
+import {Shop} from "@src/models/shop";
+import {ShopService} from "@src/services/shop.service";
 
 type DishDetailsProps = {
   route: Route<any>
@@ -26,6 +28,8 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
   const [data, setData] = useState<any>({});
   const [quantity, setQuantity] = useState<any>(1);
   const [obs, setObs] = useState<any>('');
+  const [onShop, setOnShop] = useState<Shop | null>(null);
+  const [shop, setShop] = React.useState(new Shop());
 
   const [scrollY] = React.useState(new Animated.Value(0));
   const {
@@ -46,6 +50,8 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
         }
       });
     });
+    ShopService.getCurrentShop().subscribe(async (s: Shop) => setShop(s));
+    ShopService.getOnShop().subscribe(onShop => setOnShop(onShop));
   }, []);
 
   const updateTotalDishAmount = React.useCallback(
@@ -67,6 +73,17 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
 
   const onAddToBasketButtonPressed = async () => {
 
+    if (onShop && onShop.uid === shop.uid) {
+      await addToOrder();
+    } else {
+      Alert.alert('Localização', 'Não parece estar nas imediações deste restaurante (ou não conseguimos obter a sua localização). Tem a certeza que quer continuar?', [
+        {text: 'Sim', onPress: () => addToOrder()},
+        {text: 'Não'}
+      ])
+    }
+  };
+
+  const addToOrder = async () => {
     let order = await OrderService.getCurrentOrder().pipe(take(1)).toPromise();
     if (!order) order = await OrderHelper.buildNewOrder();
 
@@ -76,14 +93,6 @@ export const DishDetails: React.FC<DishDetailsProps> = ({route}) => {
     await OrderService.setCurrentOrder(order);
 
     goBack();
-
-    // OrderService.getCurrentOrder().toPromise().then(order => {
-    //   console.log('order', order);
-    //   order?.orderItems.push(OrderHelper.itemToOrderItem(data, 1));
-    //   OrderService.updateOrder(order as any);
-    //   console.log('order', order);
-    //   goBack();
-    // });
   };
 
   const coverTranslateY = scrollY.interpolate({

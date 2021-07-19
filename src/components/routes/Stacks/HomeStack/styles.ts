@@ -12,7 +12,8 @@ export default StyleSheet.create({
     marginRight: 10,
   },
   headerTitle: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     fontSize: 16,
+    color: '#555',
   },
 });

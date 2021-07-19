@@ -8,6 +8,9 @@ import PlaceList from '@src/components/screens/PlaceList';
 import Checkout from '@src/components/routes/Stacks/CheckoutStack';
 import styles from './styles';
 import {ScreenNavigationProps} from '../types';
+import {useEffect, useState} from "react";
+import {Shop} from "@src/models/shop";
+import {ShopService} from "@src/services/shop.service";
 
 type HomeStackProps = {} & ScreenNavigationProps;
 type HomeStackParamList = {
@@ -21,6 +24,15 @@ type HomeStackParamList = {
 const Stack = createStackNavigator<HomeStackParamList>();
 
 const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
+
+  const [onShop, setOnShop] = useState<Shop | null>(null);
+
+  useEffect(() => {
+    ShopService.getOnShop().subscribe(onShop => {
+      setOnShop(onShop);
+    });
+  }, []);
+
   const _renderExploreHeaderTitle = () => {
     return (
       <View style={styles.headerLeftContainer}>
@@ -30,20 +42,28 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
           style={styles.locationIcon}
           isPrimary
         />
-        <Text style={styles.headerTitle}>Não se encontra num restaurante Scuver</Text>
+        {onShop ? (
+          <Text style={styles.headerTitle}>Está em {onShop.name}</Text>
+        ): (
+          <Text style={styles.headerTitle}>Não há restaurantes Scuver a menos de 50m.</Text>
+        )}
       </View>
     );
   };
 
   const _renderExploreHeaderRight = () => {
-    return (
+    return onShop ? (
       <Icon
         name="chevron-right"
         size={22}
         isPrimary
-        onPress={() => navigation.navigate('Notifications')}
+        onPress={() => {
+          ShopService.setCurrentShop(onShop.uid).then(() => {
+            navigation.navigate('ShopDetailsScreen');
+          });
+        }}
       />
-    );
+    ) : null;
   };
 
   const _renderPlaceDetailHeaderRight = () => {
@@ -61,7 +81,7 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
       <Stack.Screen
         options={() => {
           return {
-            headerShown: false,
+            headerShown: true,
             headerTitle: _renderExploreHeaderTitle,
             title: 'Restaurantes Scuver',
             headerTitleAlign: 'left',

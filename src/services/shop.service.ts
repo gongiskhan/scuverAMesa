@@ -20,8 +20,10 @@ class ShopServiceClass {
 
   // @ts-ignore
   private currentShop$ = new BehaviorSubject<Shop | null>(null);
+  private onShop$ = new BehaviorSubject<Shop | null>(null);
   private completeShops$ = new BehaviorSubject<Array<Shop | null>>(null);
   private currentShopSub = new Subscription();
+  private watchId = 0;
   shops: Array<Shop> = [];
   foodTypes: Array<FoodType> = [];
   location: any = null;
@@ -32,26 +34,33 @@ class ShopServiceClass {
   }
 
   updatePosition() {
-    Geolocation.getCurrentPosition((location: any) => {
-      console.log('getCurrentPosition LOCATION', location);
-      this.location = location;
-      this.updateCompleteShops();
-    }, (error: any) => {
-      console.log('getCurrentPosition LOCATION ERROR', error);
-      this.location = null;
-      this.updateCompleteShops();
-    });
-    Geolocation.stopObserving();
-    Geolocation.watchPosition((location: any) => {
+    // Geolocation.getCurrentPosition((location: any) => {
+    //   console.log('getCurrentPosition LOCATION', location);
+    //   this.location = location;
+    //   this.updateCompleteShops();
+    // }, (error: any) => {
+    //   console.log('getCurrentPosition LOCATION ERROR', error);
+    //   this.location = null;
+    //   this.updateCompleteShops();
+    // });
+    if (!this.location) {
+      Geolocation.getCurrentPosition((location: any) => this.location = location);
+    }
+    if (this.watchId) {
+      Geolocation.clearWatch(this.watchId);
+      this.watchId = 0;
+    }
+    this.watchId = Geolocation.watchPosition((location: any) => {
       console.log('watchPosition LOCATION', location);
       this.location = location;
       this.updateCompleteShops();
+      this.setOnShop();
     }, (error: any) => {
       console.log('watchPosition LOCATION ERROR', error);
       this.location = null;
       this.updateCompleteShops();
     }, {
-      distanceFilter: 50,
+      distanceFilter: 30,
       enableHighAccuracy: true,
       useSignificantChanges: true,
       maximumAge: 60000,
@@ -64,11 +73,11 @@ class ShopServiceClass {
       this.shops = shops;
       if (this.location) {
         this.calculateShopDistances();
-        // this.calculateShopDeliveryFees();
       }
       this.setShopTodaySchedules();
       this.setRatings();
       await this.setFoodTypes();
+      this.setOnShop();
       this.completeShops$.next(this.shops || []);
     });
   }
@@ -80,13 +89,13 @@ class ShopServiceClass {
   calculateShopDistances() {
     this.shops.forEach(shop => {
       const distanceInKm = this.locationHelper.getRadiusDistanceInKm(shop.address.coordinates, this.location.coords);
-      shop.distance = Math.round(distanceInKm) + 1;
+      shop.distanceInMeters = Math.round(distanceInKm * 1000);
     });
   }
 
   calculateShopDeliveryFees() {
     this.shops.forEach(shop => {
-      const deliveryFee = this.shopHelper.getDeliveryFee(shop, shop.distance as number);
+      const deliveryFee = this.shopHelper.getDeliveryFee(shop, shop.distanceInMeters / 1000);
       shop.deliveryFee = deliveryFee;
     });
   }
@@ -137,8 +146,25 @@ class ShopServiceClass {
     });
   }
 
+  setOnShop(): Promise<Shop> {
+    return new Promise(resolve => {
+      let onShop: Shop | null = null;
+      this.shops.forEach(shop => {
+        if (shop.distanceInMeters < 50) {
+          onShop = shop;
+        }
+      });
+      this.onShop$.next(onShop);
+      resolve();
+    });
+  }
+
   getCurrentShop() {
     return this.currentShop$.asObservable();
+  }
+
+  getOnShop() {
+    return this.onShop$.asObservable();
   }
 
   async getShop(uid: string): Promise<Shop | null> {
