@@ -1,7 +1,7 @@
 import {Button, Card, Container, Icon, Text, TextField} from '@src/components/elements';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Alert, Image, Linking, View} from 'react-native';
+import {Alert, Image, Linking, ScrollView, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
 import {User} from "@src/models/user";
@@ -11,6 +11,7 @@ import {EasypayService, EasypayServiceClass} from "@src/services/easypay.service
 import {UIDGenerator} from "@src/utils/uid-generator";
 import useThemeColors from "@src/custom-hooks/useThemeColors";
 import {Link} from "@react-navigation/native";
+import {MyposService} from "@src/services/mypos.service";
 
 const Wallet: React.FC = () => {
 
@@ -42,6 +43,18 @@ const Wallet: React.FC = () => {
     });
   }
 
+  const chargeCard = () => {
+    setLoading(true);
+    MyposService.getAuthToken().then(token => {
+      MyposService.getPaymentLink(token as any as string, user, UIDGenerator.generate(), Number(amount)).then((url) => {
+        setLoading(false);
+        Linking.openURL(url as any as string);
+      }).catch(err => {
+        Alert.alert('Erro', err);
+      });
+    });
+  }
+
   const chargeMBREF = () => {
     setLoading(true);
     EasypayService.createEasypayPayment(user, UIDGenerator.generate(), 0, 'mb', 'CreateFrequentPayment').then(r => {
@@ -66,25 +79,28 @@ const Wallet: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.root}>
+    <ScrollView style={styles.root}>
+      <Card style={{
+        marginTop: 100,
+        backgroundColor: 'transparent'
+      }}>
+        <Text style={{textAlign: 'justify'}}>
+          Carregue a sua carteira para efetuar pedidos Scuver, seja no estabelecimento ou na aplicação de entregas.
+          {'\n\r'}
+          Se pretender um reembolso por favor envie um e-mail para <Link style={{color: '#209c94'}} to={'mailto:scuverpt@gmail.com'}>scuverpt@gmail.com</Link>
+        </Text>
+      </Card>
       <Container style={{backgroundColor: 'transparent'}}>
         <Text style={{
           textAlign: 'center',
           fontSize: 35,
-          color: '#666',
-          textShadowColor: '#000',
+          color: '#EB9F12',
+          textShadowColor: 'white',
           textShadowRadius: 1,
-          margin: 30,
-          marginTop: 50
+          margin: 15,
+          marginTop: 5
         }}>Carteira: {formatCurrency(user?.wallet || 0)}</Text>
       </Container>
-      <Card>
-        <Text style={{textAlign: 'justify', margin: 10, marginTop: 20}}>
-          Carregue a sua carteira para efetuar pedidos Scuver, seja no estabelecimento ou na aplicação de entregas.
-          {'\n\r'}
-          Se pretender um reembolso por favor envie um e-mail para <Link to={'mailto:scuverpt@gmail.com'}>scuverpt@gmail.com</Link>
-        </Text>
-      </Card>
       <Card style={{height: 250}}>
         <Container style={{
           height: '100%',
@@ -101,7 +117,6 @@ const Wallet: React.FC = () => {
             <TextField
               autoFocus
               style={{flex: 2, fontSize: 25, flexGrow: 2, marginRight: 20}}
-              value={amount}
               onChangeText={a => setAmount(a)}
               placeholder="Valor"
               placeholderTextColor={'#ccc'}
@@ -176,12 +191,38 @@ const Wallet: React.FC = () => {
           </View>
         </Container>
       </Card>
-      {/*<Card>*/}
-      {/*  <Text>*/}
-      {/*    Cartão de Crédito*/}
-      {/*  </Text>*/}
-      {/*</Card>*/}
-    </SafeAreaView>
+      <Card style={{height: 150}}>
+        <Container style={{
+          height: '100%',
+          flexDirection: 'column'
+        }}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <Text style={{fontWeight: "bold"}}>Cartão de Débito / Crédito</Text>
+          </View>
+          {/*<View style={{flex: 2, flexDirection: 'row'}}>*/}
+          {/*  <Image source={require('../../../assets/app/card-logo.png')}*/}
+          {/*         style={{flex: 1, resizeMode: 'contain', flexShrink: 1, width: 100, height: 100}}/>*/}
+          {/*</View>*/}
+          <View style={{flex: 1, width: '100%', flexDirection: 'row', flexGrow: 1, justifyContent: 'space-between'}}>
+            <TextField
+              style={{flex: 2, fontSize: 25, flexGrow: 2, marginRight: 20}}
+              onChangeText={a => setAmount(a)}
+              placeholder="Valor"
+              placeholderTextColor={'#ccc'}
+              keyboardType="numeric"
+              leftIcon={'euro-sign'}
+            />
+            <Button
+              isLoading={loading}
+              style={{flex: 1, marginLeft: 20, flexDirection: 'row', height: 44}}
+              onPress={chargeCard}
+            >
+              <Text style={{color: '#fff', fontSize: 18}}>Carregar</Text>
+            </Button>
+          </View>
+        </Container>
+      </Card>
+    </ScrollView>
   );
 };
 
