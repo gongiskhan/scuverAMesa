@@ -37,18 +37,19 @@ const Account: React.FC<AccountProps> = () => {
 
   const alertButtons: AlertButton[] = [
     {
-      text: 'Cancel',
+      text: 'Não',
       style: 'cancel',
     },
-    {text: 'OK', onPress: () => {
+    {text: 'Sim', onPress: () => {
       AuthService.signOut().then(() => {
-        console.log('Logged out. Navigating to Login.');
+        console.log('Logged out. Navigating to Home.');
+        navigation.navigate('HomeScreen');
       });
     }},
   ];
 
   const onLogoutButtonPressed = () => {
-    Alert.alert('Confirm', 'Are you sure you want to logout?', alertButtons);
+    Alert.alert('Confirmar', 'Tem  a certeza que quer sair/logout?', alertButtons);
   };
 
   return (
@@ -100,10 +101,10 @@ const Account: React.FC<AccountProps> = () => {
       {/*    rightIcon={<Icon name={chevronIconName} />}*/}
       {/*  />*/}
       {/*</Container>*/}
-      <View style={styles.buttonContainer}>
-        <Button isFullWidth isTransparent onPress={onLogoutButtonPressed}>
-          <Text isBold isPrimary>
-            Logout
+      <View style={{...styles.buttonContainer, marginTop: 20}}>
+        <Button isFullWidth onPress={onLogoutButtonPressed}>
+          <Text isBold style={{color: 'white'}}>
+            Sair / Logout
           </Text>
         </Button>
       </View>

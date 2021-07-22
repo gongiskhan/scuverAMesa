@@ -22,7 +22,7 @@ const ActivityHistory: React.FC<ActivityHistoryProps> = () => {
   useEffect(() => {
     UserService.observeCurrentUser().subscribe(u => {
       setUser(u);
-      if (u) {
+      if (u && u.uid) {
         OrderService.getOrdersByUser(u.uid).then(orders => {
           if (orders) {
             console.log('orders.length', orders.length);

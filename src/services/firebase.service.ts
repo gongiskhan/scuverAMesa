@@ -4,6 +4,7 @@ class FirebaseServiceClass {
 
   public auth;
   public firestore;
+  public phoneAuthCode;
 
   constructor(
   ) {

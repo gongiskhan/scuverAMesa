@@ -62,24 +62,21 @@ const RootNavigation = () => {
           barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
         />
         <RootStack.Navigator mode="modal" screenOptions={screenOptions}>
-          {user ? (
-            <RootStack.Screen
-              name="Main"
-              options={{headerShown: false}}
-              component={TabNavigation}
-            />
-          ) : (
-            <RootStack.Screen
-              options={{
-                headerTransparent: true,
-                headerStatusBarHeight: 0,
-                title: '',
-                headerBackTitleVisible: false,
-              }}
-              name="Auth"
-              component={AuthenticationStack}
-            />
-          )}
+          <RootStack.Screen
+            name="Main"
+            options={{headerShown: false}}
+            component={TabNavigation}
+          />
+          <RootStack.Screen
+            options={{
+              headerTransparent: true,
+              headerStatusBarHeight: 0,
+              title: '',
+              headerBackTitleVisible: false,
+            }}
+            name="Auth"
+            component={AuthenticationStack}
+          />
           <RootStack.Screen
             options={{
               headerTransparent: true,

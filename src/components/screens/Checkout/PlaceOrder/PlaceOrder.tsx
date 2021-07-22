@@ -80,7 +80,7 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({totalPrice, shippingFee}) => {
     } else if(!user) {
       Alert.alert('Login', 'Por favor efetue login para realizar este pedido.', [
         {text: 'OK', onPress: () => {
-          navigation.navigate('Login');
+          navigation.navigate('Auth');
           }}
       ]);
     } else if(user.wallet < totalPrice) {

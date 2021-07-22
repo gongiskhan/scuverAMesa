@@ -24,7 +24,7 @@ const AuthWithPhoneNumber: React.FC<AuthWithPhoneNumberProps> = () => {
 
   const _onNextButtonPressed = () => {
     if (!phoneNumber) {
-      Alert.alert('Error', 'Please enter your phone number!');
+      Alert.alert('Error', 'Por favor insira o seu número de telemóvel!');
       return;
     }
     setIsModalVisible(true);
@@ -41,42 +41,42 @@ const AuthWithPhoneNumber: React.FC<AuthWithPhoneNumberProps> = () => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.formContainer}>
           <Text isBold isHeadingTitle>
-            Enter your phone number
+            Introduza o seu número de telemóvel
           </Text>
           <Text isSecondary hasMargin>
-            Please enter your phone number to use our services
+            Por favor introduza o seu número de telemóvel para efetuar o login.
           </Text>
           <TextField
             style={[{backgroundColor: card}, styles.phoneNumberTextField]}
             value={phoneNumber}
             onChangeText={_onPhoneNumberFieldChange}
             hasMargin
-            placeholder="Enter your phone number"
+            placeholder="Número de telemóvel"
             keyboardType="phone-pad"
             autoFocus
           />
         </View>
         <Button isFullWidth onPress={_onNextButtonPressed}>
-          <Text isBold>Next</Text>
+          <Text isBold>Continuar</Text>
         </Button>
       </ScrollView>
       <Dialog isVisible={isModalVisible} onBackdropPress={_hideModal}>
-        <Text isCenter>Login with phone number</Text>
+        <Text isCenter>Entrar com número de telemóvel</Text>
         <Text isHeadingTitle isCenter isBold style={styles.phoneNumberText}>
           {phoneNumber}
         </Text>
         <Text isCenter>
-          We will send the authentication code to the phone number you entered.
+          Iremos enviar um código de autenticação para o número que nos indicou.
         </Text>
-        <Text isCenter>Do you want to continue?</Text>
+        <Text isCenter>Quer continuar?</Text>
         <View style={styles.confirmButtonContainer}>
           <Button isFullWidth onPress={_onConfirmButtonPressed}>
-            <Text isBold>Confirm</Text>
+            <Text isBold>Sim</Text>
           </Button>
         </View>
         <View style={styles.cancelButtonContainer}>
           <Button isFullWidth isTransparent onPress={_hideModal}>
-            <Text>Cancel</Text>
+            <Text>Não</Text>
           </Button>
         </View>
       </Dialog>
