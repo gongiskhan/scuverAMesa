@@ -24,7 +24,9 @@ const Wallet: React.FC = () => {
   useEffect(() => {
     UserService.observeCurrentUser().subscribe(u => {
       setUser(u);
-      EasypayService.getEasypayPaymentMbDetailsForUser(u.uid).then(d => setMBDetails(d.method));
+      if (u) {
+        EasypayService.getEasypayPaymentMbDetailsForUser(u.uid).then(d => setMBDetails(d.method));
+      }
     });
   }, []);
 

@@ -27,10 +27,11 @@ const AuthVerificationCode: React.FC<AuthVerificationCodeProps> = () => {
 
   const _onNextButtonPressed = () => {
     if (value.length !== 5) {
-      Alert.alert('Error', 'Verification code is not valid!');
+      Alert.alert('Error', 'Código de verificação inválido');
       return;
     }
-    navigation.dispatch(StackActions.replace('LoginScreen'));
+
+    // verificar e navegar aqui
   };
 
   return (

@@ -75,7 +75,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = () => {
         <Divider />
         <View style={styles.priceContainer}>
           <View style={styles.subTotalContainer}>
-            <Text>Subtotal</Text>
+            <Text>Total</Text>
             <Text>{formatCurrency(order.total)}</Text>
           </View>
         </View>

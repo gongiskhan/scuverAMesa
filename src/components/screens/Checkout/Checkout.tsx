@@ -9,6 +9,7 @@ import DishesAlsoOrdered from './DishesAlsoOrdered';
 import {useEffect, useState} from "react";
 import {Order} from "@src/models/order";
 import {OrderService} from "@src/services/order.service";
+import DropDownPicker from 'react-native-dropdown-picker';
 
 type BasketProps = {};
 

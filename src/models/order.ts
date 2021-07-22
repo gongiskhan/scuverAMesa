@@ -20,6 +20,7 @@ export class Order {
     public total: number = 0,
     public notes: string = '',
     public wallet: number = 0,
+    public table: string = 'counter'
   ) {}
 
 }

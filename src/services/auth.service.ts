@@ -60,6 +60,7 @@ class AuthServiceClass {
 
   async askPhoneCode(phoneNumber: any) {
     console.log('phoneNumber', phoneNumber);
+    FirebaseService.phoneAuthCode = await FirebaseService.auth.signInWithPhoneNumber(phoneNumber);
   }
 
   async getCurrentProviderId() {
