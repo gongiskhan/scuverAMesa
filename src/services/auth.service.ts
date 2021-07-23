@@ -1,16 +1,17 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import firebase from 'firebase';
 import * as GoogleSignIn from 'expo-google-sign-in';
 import {FirebaseService} from '@src/services/firebase.service';
 import {UserService} from "@src/services/user.service";
 import {User} from "@src/models/user";
+import {FirestoreService} from "@src/services/firestore-utils/firestore.service";
 
 class AuthServiceClass {
 
-  private authUser$ = new ReplaySubject<firebase.User | null>(1);
+  private authUser$ = new ReplaySubject<any>(1);
   private authUserSub = () => {};
   userService = UserService;
+  phoneBeingVerified;
 
   constructor(
   ) {
@@ -23,7 +24,7 @@ class AuthServiceClass {
     });
   }
 
-  getCurrentAuthUser(): Observable<firebase.User | null> {
+  getCurrentAuthUser(): Observable<any> {
     return this.authUser$.asObservable();
   }
 
@@ -39,18 +40,19 @@ class AuthServiceClass {
     try {
       await GoogleSignIn.askForPlayServicesAsync();
       const { type, user } = await GoogleSignIn.signInAsync();
+      console.log('USER FROM GOOGLE', type, user);
       if (type === 'success') {
-        const credential = firebase.auth.GoogleAuthProvider.credential(user?.auth?.idToken);
-        firebase.auth().signInWithCredential(credential).then(authUser => {
+        const credential = FirebaseService.auth.GoogleAuthProvider.credential(user?.auth?.idToken);
+        FirebaseService.auth.signInWithCredential(credential).then(authUser => {
           console.log('authUser', authUser);
-          //if (authUser.additionalUserInfo?.isNewUser) {
+          if (authUser.additionalUserInfo?.isNewUser) {
             UserService.addUser({
               name: authUser.user?.displayName || (authUser.additionalUserInfo?.profile as any).name,
               email: authUser.user?.email || (authUser.additionalUserInfo?.profile as any).email,
               phoneNumber: authUser.user?.phoneNumber,
               photoUrl: authUser.user?.photoURL || (authUser.additionalUserInfo?.profile as any).picture,
             } as User);
-          //}
+          }
         }).catch((error) => console.error(error));
       }
     } catch ({ message }) {
@@ -59,8 +61,36 @@ class AuthServiceClass {
   }
 
   async askPhoneCode(phoneNumber: any) {
+    if (phoneNumber.toString().indexOf('351') === -1) {
+      phoneNumber = '+351' + phoneNumber;
+    }
     console.log('phoneNumber', phoneNumber);
-    FirebaseService.phoneAuthCode = await FirebaseService.auth.signInWithPhoneNumber(phoneNumber);
+    FirebaseService.auth.settings.appVerificationDisabledForTesting = true;
+    FirebaseService.auth.signInWithPhoneNumber(phoneNumber).then((p) => {
+      console.log('signInWithPhoneNumber ok');
+      this.phoneBeingVerified = phoneNumber;
+      FirebaseService.codeConfirm = p;
+    }).catch(err => console.error('ERROR', err));
+  }
+
+  async verifySMSCode(code: any) {
+    FirebaseService.codeConfirm.confirm(code).then(authUser => {
+      console.log('verifySMSCode authUser', authUser);
+      setTimeout(() => {
+        UserService.getCurrentUser().then(u => {
+          if (!u || (u.phoneNumber != this.phoneBeingVerified && `+351${u.phoneNumber}` != this.phoneBeingVerified) ) {
+            if (authUser.additionalUserInfo?.isNewUser) {
+              UserService.addUser({
+                name: authUser.user?.displayName || (authUser.additionalUserInfo?.profile as any)?.name || '',
+                email: authUser.user?.email || (authUser.additionalUserInfo?.profile as any)?.email || '',
+                phoneNumber: this.phoneBeingVerified,
+                photoUrl: authUser.user?.photoURL || (authUser.additionalUserInfo?.profile as any)?.picture || '',
+              } as User);
+            }
+          }
+        });
+      }, 500);
+    });
   }
 
   async getCurrentProviderId() {

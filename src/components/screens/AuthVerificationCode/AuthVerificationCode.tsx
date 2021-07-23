@@ -10,10 +10,11 @@ import {
 import useThemeColors from '@src/custom-hooks/useThemeColors';
 import styles from './styles';
 import {useNavigation, StackActions} from '@react-navigation/native';
+import {AuthService} from "@src/services/auth.service";
 
 type AuthVerificationCodeProps = {};
 
-const CELL_COUNT = 5;
+const CELL_COUNT = 6;
 
 const AuthVerificationCode: React.FC<AuthVerificationCodeProps> = () => {
   const navigation = useNavigation();
@@ -26,12 +27,15 @@ const AuthVerificationCode: React.FC<AuthVerificationCodeProps> = () => {
   });
 
   const _onNextButtonPressed = () => {
-    if (value.length !== 5) {
+    if (value.length !== 6) {
       Alert.alert('Error', 'Código de verificação inválido');
       return;
     }
 
     // verificar e navegar aqui
+    AuthService.verifySMSCode(value).then(res => {
+      navigation.navigate('HomeScreen');
+    });
   };
 
   return (

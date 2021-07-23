@@ -27,7 +27,7 @@ class UserServiceClass {
       if (!authUser) { // @ts-ignore
         return this.currentUser$.next(null);
       }
-      this.currentUserSub = this.observeUserByEmail(authUser.email || '').subscribe(user => this.currentUser$.next(user));
+      this.currentUserSub = this.observeUserByEmailOrPhoneNumber(authUser.email || '', authUser.phoneNumber || '').subscribe(user => this.currentUser$.next(user));
     });
   }
 
@@ -102,6 +102,21 @@ class UserServiceClass {
       });
     });
   }
+
+  observeUserByEmailOrPhoneNumber(email: string, phoneNumber): Observable<User | null> {
+    return new Observable(observer => {
+      this.firestoreService.observeRecordByProperties('users', ['email', 'phoneNumber', 'phoneNumber'],
+        '==', [email, phoneNumber, phoneNumber && phoneNumber.replace('+351', '')]).subscribe(record => {
+        // console.log('RECORD', record);
+        if (record) {
+          observer.next(record);
+        } else {
+          observer.next(null);
+        }
+      });
+    });
+  }
+
 
   observeUsers(): Observable<User[]> {
     return new Observable(observer => {

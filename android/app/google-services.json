@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "326732084118-jv82l2hr4pg6qumtv4retak05ig1aq5q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appmob.scuveramesa",
+            "certificate_hash": "b20f9e15dcba7a23b042d90fb3e4b8df58e4155c"
+          }
+        },
+        {
+          "client_id": "326732084118-tbq13flnqoamh6dl2l27mkhojrvijnud.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appmob.scuveramesa",
+            "certificate_hash": "a0d378e2fd4e9f7f1cf88bf1134e8a217bebc3c3"
+          }
+        },
+        {
           "client_id": "326732084118-kkns14e12mqlic98lcsa0rmgb96a2b74.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -32,10 +48,10 @@
               "client_type": 3
             },
             {
-              "client_id": "326732084118-u1afnf1b337jmc2a15l59eiost6e1vog.apps.googleusercontent.com",
+              "client_id": "326732084118-0h22shlmei0g3ccikpkdpbojoskv2gsr.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.appmob.scuver"
+                "bundle_id": "com.appmob.scuveramesa"
               }
             }
           ]

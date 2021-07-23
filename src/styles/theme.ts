@@ -11,13 +11,13 @@ export const lightTheme = {
   },
 };
 export const darkTheme = {
-  ...DarkTheme,
+  ...DefaultTheme,
   colors: {
-    ...DarkTheme.colors,
+    ...DefaultTheme.colors,
     primary: '#209c94',
-    secondary: '#ccc',
-    card: '#282828',
-    background: '#121212',
-    border: '#333333',
+    secondary: '#9b9b9b',
+    text: '#333333',
+    border: '#ededed',
+    tertiary: '#EB9F12',
   },
 };

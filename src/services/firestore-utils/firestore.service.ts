@@ -1,6 +1,5 @@
 /* tslint:disable: max-line-length */
 import {Observable} from 'rxjs';
-import {WhereFilterOp} from '@firebase/firestore-types';
 import {FirebaseService} from "@src/services/firebase.service";
 
 class FirestoreServiceClass {
@@ -16,7 +15,7 @@ class FirestoreServiceClass {
     });
   }
 
-  getRecordByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any) {
+  getRecordByProperty(collection: string, property: string, filterOp: any = '==', value: any) {
     return new Promise(resolve => {
       FirebaseService.firestore.collection(collection).where(property, filterOp, value).limit(1).get().then(record => {
         resolve(record?.docs[0]?.data());
@@ -36,7 +35,7 @@ class FirestoreServiceClass {
   //   }).valueChanges().pipe(take(1), map(value => value[0])).toPromise();
   // }
   //
-  getRecordsByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any): Promise<any[]> {
+  getRecordsByProperty(collection: string, property: string, filterOp: any = '==', value: any): Promise<any[]> {
 
     return new Promise(resolve => {
       FirebaseService.firestore.collection(collection).where(property, filterOp, value).get().then(querySnapshot => {
@@ -49,13 +48,13 @@ class FirestoreServiceClass {
     });
   }
 
-  getRecordsByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Promise<any[]> {
+  getRecordsByProperties(collection: string, properties: string[], filterOp: any | any[] = '==', values: any[]): Promise<any[]> {
     return new Promise(resolve => {
       let query: any;
       properties.forEach((property, i) => {
         const op = Array.isArray(filterOp) ? filterOp[i] : filterOp;
-        if (!query) query = FirebaseService.firestore.collection(collection).where(property, op, values[i]);
-        else query = query.where(property, op, values[i]);
+        if (!query && values[i]) query = FirebaseService.firestore.collection(collection).where(property, op, values[i]);
+        else if(values[i]) query = query.where(property, op, values[i]);
       });
       query.onSnapshot((querySnap: any) => {
         const results: any = [];
@@ -99,7 +98,7 @@ class FirestoreServiceClass {
   //   }).valueChanges().pipe(map(value => value[0]));
   // }
   //
-  observeRecordByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
+  observeRecordByProperties(collection: string, properties: string[], filterOp: any | any[] = '==', values: any[]): Observable<any> {
     return new Observable(observer => {
       const q = FirebaseService.firestore.collection(collection);
       const op = Array.isArray(filterOp) ? filterOp[0] : filterOp;
@@ -115,7 +114,7 @@ class FirestoreServiceClass {
   }
 
 
-  observeRecordsByProperty(collection: string, property: string, filterOp: WhereFilterOp = '==', value: any): Observable<any> {
+  observeRecordsByProperty(collection: string, property: string, filterOp: any = '==', value: any): Observable<any> {
     return new Observable(observer => {
       FirebaseService.firestore.collection(collection).where(property, filterOp, value).onSnapshot(querySnapshot => {
         const records: any = [];
@@ -127,7 +126,7 @@ class FirestoreServiceClass {
     });
   }
 
-  observeRecordsByProperties(collection: string, properties: string[], filterOp: WhereFilterOp | WhereFilterOp[] = '==', values: any[]): Observable<any> {
+  observeRecordsByProperties(collection: string, properties: string[], filterOp: any | any[] = '==', values: any[]): Observable<any> {
     return new Observable(observer => {
       let query: any;
       properties.forEach((property, i) => {

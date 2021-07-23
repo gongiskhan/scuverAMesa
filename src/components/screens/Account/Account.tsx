@@ -55,19 +55,20 @@ const Account: React.FC<AccountProps> = () => {
   return (
     <ScrollView>
       <Divider />
-      <Container>
-        <ListRowItem
-          title={user?.name || 'Anónimo'}
-          subTitle="Editar Perfil"
-          onPress={() => navigation.navigate('EditProfileScreen')}
-          leftIcon={
-            user?.photoUrl ?
-            <Image source={{uri: user?.photoUrl}} style={styles.profileAvatar} /> :
-            <Image source={require('../../../assets/profile/avatar.png')} style={styles.profileAvatar} />
-          }
-          rightIcon={<Icon name={chevronIconName} />}
-        />
+      {user && <Container>
+          <ListRowItem
+              title={user?.name || 'Anónimo'}
+              subTitle="Editar Perfil"
+              onPress={() => navigation.navigate('EditProfileScreen')}
+              leftIcon={
+                user?.photoUrl ?
+                  <Image source={{uri: user?.photoUrl}} style={styles.profileAvatar}/> :
+                  <Image source={require('../../../assets/profile/avatar.png')} style={styles.profileAvatar}/>
+              }
+              rightIcon={<Icon name={chevronIconName}/>}
+          />
       </Container>
+      }
       {/*<Container style={styles.accountMenuItemContainer}>*/}
       {/*  <Divider />*/}
       {/*  <Divider />*/}
@@ -101,13 +102,26 @@ const Account: React.FC<AccountProps> = () => {
       {/*    rightIcon={<Icon name={chevronIconName} />}*/}
       {/*  />*/}
       {/*</Container>*/}
-      <View style={{...styles.buttonContainer, marginTop: 20}}>
-        <Button isFullWidth onPress={onLogoutButtonPressed}>
-          <Text isBold style={{color: 'white'}}>
-            Sair / Logout
-          </Text>
-        </Button>
-      </View>
+      {
+        user ? (
+          <View style={{...styles.buttonContainer, marginTop: 20}}>
+            <Button isFullWidth onPress={onLogoutButtonPressed}>
+              <Text isBold style={{color: 'white'}}>
+                Sair / Logout
+              </Text>
+            </Button>
+          </View>
+        ) : <View style={{...styles.buttonContainer, marginTop: 20}}>
+          <Button isFullWidth onPress={() => {
+            // AuthService.askPhoneCode('936256983');
+            navigation.navigate('Auth');
+          }}>
+            <Text isBold style={{color: 'white'}}>
+              Login
+            </Text>
+          </Button>
+        </View>
+      }
     </ScrollView>
   );
 };
