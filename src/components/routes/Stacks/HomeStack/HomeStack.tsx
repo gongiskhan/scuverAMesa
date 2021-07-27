@@ -11,12 +11,14 @@ import {ScreenNavigationProps} from '../types';
 import {useEffect, useState} from "react";
 import {Shop} from "@src/models/shop";
 import {ShopService} from "@src/services/shop.service";
+import Reviews from "@src/components/screens/Reviews/Reviews";
 
 type HomeStackProps = {} & ScreenNavigationProps;
 type HomeStackParamList = {
   HomeScreen: undefined;
   ShopDetailsScreen: undefined;
   CheckoutScreen: undefined;
+  Reviews: undefined;
   PlaceListScreen: {
     title?: string;
   };
@@ -105,6 +107,13 @@ const HomeStack: React.FC<HomeStackProps> = ({navigation}) => {
         }}
         name="ShopDetailsScreen"
         component={ShopDetails}
+      />
+      <Stack.Screen
+        name="Reviews"
+        options={{
+          headerTitle: 'Avaliações e Fotos',
+        }}
+        component={Reviews}
       />
       <Stack.Screen
         options={({route: {params}}) => {

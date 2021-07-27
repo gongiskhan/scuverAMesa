@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Alert, Linking, View} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {Rating, Button, Icon, Text, Container} from '@src/components/elements';
 import styles from './styles';
 import {Shop} from "@src/models/shop";
@@ -18,6 +18,8 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
   data,
   isSummary,
 }) => {
+
+  const navigation = useNavigation();
 
   const openMap = (lat, lng) => {
     showLocation({
@@ -49,6 +51,7 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
   const {
     colors: {border},
   } = useTheme();
+
   return (
     <>
       <View style={styles.container}>
@@ -57,36 +60,37 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
           <Text isPrimary style={{position: 'relative', bottom: 2, color: lightTheme.colors.tertiary}}>{data.rating}</Text>
           <Text isPrimary style={{position: 'relative', bottom: 3, fontSize: 12, color: lightTheme.colors.tertiary}}>({data.reviewsLength})</Text>
         </View>
-        <View style={styles.buttonContainer}>
+        <View style={{...styles.ratingContainer, position: 'absolute', top: -20, right: -5, flex: 0, flexDirection: 'row'}}>
           <Button
             style={[styles.button, {backgroundColor: border}]}
             icon={<Icon isPrimary name="map-marker-alt" size={10} />}>
             <Text isPrimary style={styles.buttonText}>{`${Math.round(data.distanceInMeters / 1000)}~km`}</Text>
           </Button>
-          {/*<Button*/}
-          {/*    style={[styles.button, {backgroundColor: border}]}*/}
-          {/*    icon={<Icon isPrimary name="motorcycle" size={10} />}>*/}
-          {/*  <Text isPrimary style={styles.buttonText}>{`~${data.deliveryFee}€`}</Text>*/}
-          {/*</Button>*/}
           <Button
             style={[styles.button, {backgroundColor: border}]}
             icon={<Icon isPrimary name="clock" size={10} />}>
             <Text isPrimary style={styles.buttonText}>{`${preparationTime}'`}</Text>
           </Button>
-          {/*<Button*/}
-          {/*    style={[styles.button, {backgroundColor: border}]}*/}
-          {/*    icon={<Icon isPrimary name="clock" size={10} />}>*/}
-          <Text isPrimary style={{...styles.buttonText, marginLeft: 10, marginTop: 10}}>
-            <Text isPrimary style={{...styles.buttonText, fontWeight: 'bold'}}>Horário: </Text>
-            {data.todaySchedule?.workingPeriods?.map((s, it) => {
-              return ` ${it ? '/ ' : ''}${s.startTime}-${s.endTime}`
-            })}
-          </Text>
-          {/*</Button>*/}
+          <Button
+            onPress={() => navigation.navigate('Reviews')}
+            style={[styles.button, {backgroundColor: border}]}>
+            <Text isPrimary style={styles.buttonText}>Fotos e Avaliações {">"}</Text>
+          </Button>
+        </View>
+        <View style={{...styles.buttonContainer, marginBottom: 10}}>
+
         </View>
       </View>
+      <View style={{marginTop: 15}}>
+        <Text isPrimary>
+          <Text isSecondary isBold>Horário: </Text>
+          {data.todaySchedule?.workingPeriods?.map((s, it) => {
+            return ` ${it ? '/ ' : ''}${s.startTime}-${s.endTime}`
+          })}
+        </Text>
+      </View>
       {isSummary ? null : (
-        <Container style={{marginTop: 20, flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
+        <Container style={{marginTop: 10, flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
           <Text isSecondary isBold style={{marginBottom: 12}}>
             Morada/Direccões:
           </Text>

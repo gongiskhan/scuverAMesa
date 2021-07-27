@@ -35,13 +35,13 @@ class ReviewServiceClass {
     return this.observeReviews().pipe(take(1)).toPromise();
   }
 
-  // getReviewsByShop(shopId: string): Promise<Review[]> {
-  //   return this.firestoreService.observeRecordsByProperty('reviews', 'shop.uid', '==', shopId)
-  //       .pipe(
-  //           take(1),
-  //           map((reviews: Review[]) => reviews.map(review => review ? {...new Review(), ...review} : null))
-  //       ).toPromise();
-  // }
+  getReviewsByShop(shopId: string): Promise<Review[]> {
+    return this.firestoreService.observeRecordsByProperty('reviews', 'shop.uid', '==', shopId)
+        .pipe(
+            take(1),
+            map((reviews: Review[]) => reviews.map(review => review ? {...new Review(), ...review} : null))
+        ).toPromise();
+  }
 
   // getReviewsByUser(userId: string): Promise<Review[]> {
   //   return this.firestoreService.observeRecordsByProperty('reviews', 'user.uid', '==', userId)
@@ -110,7 +110,7 @@ class ReviewServiceClass {
 
   observeReviews(): Observable<Review[]> {
     return new Observable(observer => {
-      this.firestoreService.observeCollection('reviews').pipe(map((reviews) => {
+      this.firestoreService.observeCollection('reviews').pipe(map((reviews: any) => {
         return reviews.map((review: any) => review ? {...new Review(), ...review} : null)
       })).subscribe(result => {
         observer.next(result as any);

@@ -5,13 +5,13 @@ import ChangeAddress from '@src/components/screens/ChangeAddress';
 import SavedAddresses from '@src/components/screens/SavedAddresses';
 import AddAddress from '@src/components/screens/AddAddress';
 import SelectLocation from '@src/components/screens/SelectLocation';
-import Promotion from '@src/components/screens/Promotion';
 import PaymentMethod from '@src/components/screens/PaymentMethod';
 import TrackOrder from '@src/components/screens/TrackOrder';
 import {Icon, Button} from '@src/components/elements';
 import styles from './styles';
 import {ScreenNavigationProps} from '../types';
 import {I18nManager} from 'react-native';
+import Reviews from "@src/components/screens/Reviews/Reviews";
 
 type CheckoutStackProps = {} & ScreenNavigationProps;
 const Stack = createStackNavigator();
@@ -89,11 +89,11 @@ const CheckoutStack: React.FC<CheckoutStackProps> = (props) => {
         component={SelectLocation}
       />
       <Stack.Screen
-        name="PromotionScreen"
+        name="Reviews"
         options={{
-          headerTitle: 'Add A Promo',
+          headerTitle: 'Avaliações e Fotos',
         }}
-        component={Promotion}
+        component={Reviews}
       />
       <Stack.Screen
         name="PaymentMethodScreen"
