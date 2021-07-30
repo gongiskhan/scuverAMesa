@@ -141,7 +141,7 @@ class ShopServiceClass {
   setCurrentShop(uid: string): Promise<Shop> {
     return new Promise(resolve => {
       this.currentShopSub.unsubscribe();
-      this.currentShopSub = this.observeShop(uid).subscribe(shop => this.currentShop$.next(shop));
+      this.currentShopSub = this.observeShop(uid).subscribe(shop => this.currentShop$.next(this.shops.find(s => s && shop && s.uid === shop.uid) || shop));
       resolve();
     });
   }

@@ -5,6 +5,7 @@ import {FirebaseService} from '@src/services/firebase.service';
 import {UserService} from "@src/services/user.service";
 import {User} from "@src/models/user";
 import {FirestoreService} from "@src/services/firestore-utils/firestore.service";
+import auth from "@react-native-firebase/auth";
 
 class AuthServiceClass {
 
@@ -42,7 +43,7 @@ class AuthServiceClass {
       const { type, user } = await GoogleSignIn.signInAsync();
       console.log('USER FROM GOOGLE', type, user);
       if (type === 'success') {
-        const credential = FirebaseService.auth.GoogleAuthProvider.credential(user?.auth?.idToken);
+        const credential = auth.GoogleAuthProvider.credential(user?.auth?.idToken || '');
         FirebaseService.auth.signInWithCredential(credential).then(authUser => {
           console.log('authUser', authUser);
           if (authUser.additionalUserInfo?.isNewUser) {

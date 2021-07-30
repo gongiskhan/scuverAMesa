@@ -10,15 +10,14 @@ class FirebaseServiceClass {
 
   constructor(
   ) {
-    // if (!firebase.apps.length) {
-    //   this.init();
-    // } else {
-    //   firebase.app().
-    //   }
-    //   firebase.app().delete().then(() => {
-    //     this.init();
-    //   });
-    // }
+
+    if (!firebase.apps.length) {
+      this.init();
+    } else {
+      firebase.app().delete().then(() => {
+        this.init();
+      });
+    }
 
     this.auth = auth();
     this.firestore = firestore();

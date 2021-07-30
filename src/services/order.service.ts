@@ -82,16 +82,18 @@ class OrderServiceClass {
   }
 
   async setCurrentOrder(order: Order) {
-    order.subTotal = this.orderHelper.getOrderSubTotal(order);
-    order.total    = this.orderHelper.getOrderTotal(order);
+    if (order) {
+      order.subTotal = this.orderHelper.getOrderSubTotal(order);
+      order.total    = this.orderHelper.getOrderTotal(order);
 
-    if (order.wallet) {
-      order.total -= order.wallet;
+      if (order.wallet) {
+        order.total -= order.wallet;
+      }
+
+      console.log('SETTING CURRENT ORDER', order);
+
+      await this.updateOrder(order);
     }
-
-    console.log('SETTING CURRENT ORDER', order);
-
-    await this.updateOrder(order);
     await this.removeOrdersBeingCreatedByUserExcept(order);
   }
 
@@ -185,7 +187,7 @@ class OrderServiceClass {
       'orders',
       ['uid'    , 'user.uid'    , 'status'       ],
       ['!='     , '=='          , '=='           ],
-      [order.uid, order.user.uid, 'being-created']
+      [order?.uid || 'NA', order?.user?.uid || 'NA', 'being-created']
     ).then(records => {
       records.forEach(record => this.removeOrder(record.uid));
     });

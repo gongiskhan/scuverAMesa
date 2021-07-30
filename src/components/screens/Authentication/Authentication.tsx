@@ -5,12 +5,21 @@ import useThemeColors from '@src/custom-hooks/useThemeColors';
 import styles from './styles';
 import {StackActions, useNavigation} from '@react-navigation/native';
 import {AuthService} from "@src/services/auth.service";
+import {useEffect} from "react";
 
 type AuthenticationProps = {};
 
 const Authentication: React.FC<AuthenticationProps> = () => {
   const navigation = useNavigation();
   const {primary} = useThemeColors();
+
+  useEffect(() => {
+    AuthService.getCurrentAuthUser().subscribe(u => {
+      if (u) {
+        navigation.navigate('HomeScreen');
+      }
+    });
+  }, []);
 
   const _onConnectWithPhoneNumberButtonPressed = () => {
     navigation.navigate('AuthWithPhoneNumberScreen');

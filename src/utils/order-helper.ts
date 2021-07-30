@@ -75,7 +75,7 @@ class OrderHelperClass {
 
   getOrderSubTotal(order: Order) {
     let subTotal = 0;
-    if (order.orderItems) {
+    if (order && order.orderItems) {
       order.orderItems.forEach(orderItem => subTotal += this.getOrderItemTotal(orderItem));
     }
     return subTotal;

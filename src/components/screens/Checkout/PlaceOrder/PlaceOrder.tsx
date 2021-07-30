@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Alert, ScrollView, View} from 'react-native';
-import {Container, Text, Button} from '@src/components/elements';
+import {Container, Text, Button, TextField} from '@src/components/elements';
 import SuccessOrderModal from './SuccessOrderModal';
 import styles from './styles';
 import {formatCurrency} from '@src/utils/number-formatter';
@@ -20,23 +20,27 @@ type PlaceOrderProps = {
 };
 
 const PlaceOrder: React.FC<PlaceOrderProps> = ({totalPrice, shippingFee}) => {
-  const [isSuccessOrderModalVisible, setIsSuccessOrderModalVisible] =
-    React.useState(false);
 
   const navigation = useNavigation();
   const colors = useThemeColors();
 
+  const [isSuccessOrderModalVisible, setIsSuccessOrderModalVisible] =
+    React.useState(false);
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState<Array<any>>([]);
+  const [notes, setNotes] = useState<string>('');
 
   const [user, setUser] = useState<User | null>(null);
   const [order, setOrder] = useState({} as Order);
 
   const setTable = (table) => {
     order.table = table;
+    if (table === 'notes') {
+      order.notes += notes;
+    }
     setOrder(order);
-    setValue(table);
   }
 
   useEffect(() => {
@@ -48,7 +52,7 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({totalPrice, shippingFee}) => {
         setOrder(order);
       }
     });
-    const its = [{label: 'Balcão', value: 'counter'}];
+    const its = [{label: 'Balcão', value: 'counter'}, {label: 'Sem Número', value: 'notes'}];
     for (let i = 0; i < 200; i++) {
       its.push({label: `Mesa ${i}`, value: `table${i}`});
     }
@@ -100,16 +104,29 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({totalPrice, shippingFee}) => {
       {/*    {formatCurrency(totalPrice)}*/}
       {/*  </Text>*/}
       {/*</View>*/}
-      <View style={styles.totalPriceContainer}>
+      <View style={{...styles.totalPriceContainer, height: value === 'notes' ? 100 : 50}}>
         <DropDownPicker
           placeholder={'Selecione a Mesa'}
           open={open}
           value={value}
           items={items}
           setOpen={setOpen}
-          setValue={setTable}
+          setValue={setValue}
           setItems={setItems}
+          onChangeValue={() => {
+            setTable(value);
+          }}
         />
+        {value === 'notes' &&
+        <TextField
+            style={{marginTop: 30, marginBottom: 30}}
+            placeholder={'Explique a localização da mesa aqui.'}
+            textContentType="name"
+            hasMargin
+            placeholderTextColor={'#111'}
+            onChangeText={text => setNotes(text)}
+        />
+        }
       </View>
       <Button style={{backgroundColor: !value || !totalPrice ? colors.border : colors.primary}} disabled={!value || !totalPrice} isFullWidth onPress={_onPlaceOrderButtonPressed}>
         <Text isBold style={styles.placeOrderText}>

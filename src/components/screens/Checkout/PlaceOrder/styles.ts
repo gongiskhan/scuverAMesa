@@ -4,7 +4,7 @@ export default StyleSheet.create({
     padding: 10,
   },
   totalPriceContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     marginBottom: 15,
   },

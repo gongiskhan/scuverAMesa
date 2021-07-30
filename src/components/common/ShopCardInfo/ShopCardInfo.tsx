@@ -60,7 +60,7 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
           <Text isPrimary style={{position: 'relative', bottom: 2, color: lightTheme.colors.tertiary}}>{data.rating}</Text>
           <Text isPrimary style={{position: 'relative', bottom: 3, fontSize: 12, color: lightTheme.colors.tertiary}}>({data.reviewsLength})</Text>
         </View>
-        <View style={{...styles.ratingContainer, position: 'absolute', top: -20, right: -5, flex: 0, flexDirection: 'row'}}>
+        <View style={{...styles.ratingContainer, flexDirection: 'row'}}>
           <Button
             style={[styles.button, {backgroundColor: border}]}
             icon={<Icon isPrimary name="map-marker-alt" size={10} />}>
@@ -71,11 +71,11 @@ const ShopCardInfo: React.FC<ShopCardInfoProps> = ({
             icon={<Icon isPrimary name="clock" size={10} />}>
             <Text isPrimary style={styles.buttonText}>{`${preparationTime}'`}</Text>
           </Button>
-          <Button
+          {!isSummary && <Button
             onPress={() => navigation.navigate('Reviews')}
-            style={[styles.button, {backgroundColor: border}]}>
+            style={[styles.button, {backgroundColor: border, position: 'absolute', top: -20, left: '150%', flex: 0, }]}>
             <Text isPrimary style={styles.buttonText}>Fotos e Avaliações {">"}</Text>
-          </Button>
+          </Button>}
         </View>
         <View style={{...styles.buttonContainer, marginBottom: 10}}>
 
